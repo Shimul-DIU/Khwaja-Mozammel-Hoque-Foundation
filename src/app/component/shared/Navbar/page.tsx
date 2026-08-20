@@ -88,10 +88,10 @@ export default function Navbar() {
 
   return (
     <header className="sticky lg:mx-auto lg:max-w-7xl w-full bg-white top-0 z-50 bg-teal text-paper shadow-md">
-      <div className="max-w-7xl px-2 sm:px-6">
+      <div className="max-w-7xl  sm:px-6">
 
         {/* Top Bar */}
-        <div className="flex items-center justify-between h-16 gap-2 sm:gap-4">
+        <div className="flex items-center justify-between h-16 pr-2 sm:gap-2">
 
           {/* Left Side: Logo */}
           <Link href="/" className="shrink-0 flex items-center" onClick={() => setOpen(false)}>
@@ -136,7 +136,7 @@ export default function Navbar() {
           </nav>
 
           {/* Right Controls */}
-          <div className="flex items-center gap-1.5 sm:gap-2">
+          <div className="flex items-center gap-1 sm:gap-2">
 
             {/* Donate Button */}
             {/* <Link
@@ -169,7 +169,7 @@ export default function Navbar() {
             </button> */}
               <Link
                   href="/donate"
-                  className="bg-[#008E48] hover:bg-[#006648] text-white font-bold px-4 py-2 rounded-lg transition-all text-sm shadow-md hover:scale-105 active:scale-95"
+                  className="bg-[#008E48] hover:bg-[#006648] text-white font-bold px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg transition-all text-sm shadow-md hover:scale-105 active:scale-95"
                 >
                   Donate
                 </Link>
@@ -214,7 +214,7 @@ export default function Navbar() {
 
         {/* Mobile Nav Items Dropdown Menu */}
         {open && (
-          <nav className="lg:hidden pb-4 pt-2 border-t border-paper/15 flex flex-col gap-1.5 text-sm font-medium">
+          <nav className="lg:hidden pb-4 pt-2 border-t border-paper/15 flex flex-col text-sm font-medium">
             {links.map((l) => {
               const isActive = pathname === l.href;
               return (
