@@ -15,6 +15,7 @@ const links: NavItem[] = [
   { href: "/scholarship", label: "Scholarship" },
   { href: "/health", label: "Health Support" },
   { href: "/contact", label: "Contact" },
+
 ];
 
 function SunIcon({ className = "w-6 h-6" }: { className?: string }) {
@@ -122,7 +123,7 @@ export default function Navbar() {
                 <Link
                   key={l.href}
                   href={l.href}
-                  className={`px-3 py-2 rounded-md transition-colors ${
+                  className={`px-3   py-2 rounded-md transition-colors ${
                     isActive
                       ? "bg-teal-light text-gold font-semibold"
                       : "hover:bg-teal-light/60 hover:text-gold-light"
@@ -146,7 +147,7 @@ export default function Navbar() {
             </Link> */}
 
             {/* ✅ Mobile Search Toggle Button (শুধু মোবাইলে) */}
-            <button
+             <button
               type="button"
               onClick={() => setSearchOpen(!searchOpen)}
               className="md:hidden p-1.5 sm:p-2 rounded-md hover:bg-teal-light/60 transition-colors"
@@ -157,7 +158,7 @@ export default function Navbar() {
             </button>
 
             {/* Brightness Icon */}
-            <button
+            {/* <button
               type="button"
               onClick={() => setDark((d) => !d)}
               aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
@@ -165,8 +166,13 @@ export default function Navbar() {
               className="p-1.5 sm:p-2 rounded-md hover:bg-teal-light/60 transition-colors"
             >
               {dark ? <SunIcon /> : <MoonIcon />}
-            </button>
-
+            </button> */}
+              <Link
+                  href="/donate"
+                  className="bg-[#008E48] hover:bg-[#006648] text-white font-bold px-4 py-2 rounded-lg transition-all text-sm shadow-md hover:scale-105 active:scale-95"
+                >
+                  Donate
+                </Link>
             {/* User Icon */}
             <button
               type="button"
