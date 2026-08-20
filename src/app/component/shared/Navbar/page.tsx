@@ -17,7 +17,7 @@ const links: NavItem[] = [
   { href: "/contact", label: "Contact" },
 ];
 
-function SunIcon({ className = "w-5 h-5" }: { className?: string }) {
+function SunIcon({ className = "w-6 h-6" }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className={className}>
       <circle cx="12" cy="12" r="4.5" />
@@ -26,7 +26,7 @@ function SunIcon({ className = "w-5 h-5" }: { className?: string }) {
   );
 }
 
-function MoonIcon({ className = "w-5 h-5" }: { className?: string }) {
+function MoonIcon({ className = "w-6 h-6" }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className={className}>
       <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z" strokeLinejoin="round" />
@@ -34,7 +34,7 @@ function MoonIcon({ className = "w-5 h-5" }: { className?: string }) {
   );
 }
 
-function UserIcon({ className = "w-5 h-5" }: { className?: string }) {
+function UserIcon({ className = "w-6 h-6" }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className={className}>
       <circle cx="12" cy="8" r="3.5" />
@@ -52,7 +52,7 @@ function SearchIcon({ className = "w-4 h-4" }: { className?: string }) {
   );
 }
 
-function CloseIcon({ className = "w-5 h-5" }: { className?: string }) {
+function CloseIcon({ className = "w-6 h-6" }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
       <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" strokeLinejoin="round" />
@@ -60,7 +60,7 @@ function CloseIcon({ className = "w-5 h-5" }: { className?: string }) {
   );
 }
 
-function MenuIcon({ className = "w-5 h-5" }: { className?: string }) {
+function MenuIcon({ className = "w-6 h-6" }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
       <path d="M4 6h16M4 12h16M4 18h16" strokeLinecap="round" strokeLinejoin="round" />
@@ -87,7 +87,7 @@ export default function Navbar() {
 
   return (
     <header className="sticky lg:mx-auto lg:max-w-7xl w-full bg-white top-0 z-50 bg-teal text-paper shadow-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+      <div className="max-w-7xl px-2 sm:px-6">
 
         {/* Top Bar */}
         <div className="flex items-center justify-between h-16 gap-2 sm:gap-4">
@@ -97,12 +97,12 @@ export default function Navbar() {
             <img
               src="/logo.jpg"
               alt="Logo"
-              className="h-10 sm:h-12 w-auto object-contain"
+              className="h-13 w-auto object-contain"
             />
           </Link>
 
           {/* Center Search Bar (Desktop) */}
-          <form onSubmit={handleSearch} className="hidden md:flex relative flex-1 max-w-xs lg:max-w-md mx-4">
+          <form onSubmit={handleSearch} className="hidden md:flex relative flex-1 max-w-xs  mx-4">
             <SearchIcon className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-paper/50" />
             <input
               type="search"
@@ -138,12 +138,12 @@ export default function Navbar() {
           <div className="flex items-center gap-1.5 sm:gap-2">
 
             {/* Donate Button */}
-            <Link
+            {/* <Link
               href="/donate"
               className="dark:bg-[#008E48] hover:dark:bg-[#006648] text-white hover:bg-gold-light text-teal font-semibold text-xs sm:text-sm px-3 sm:px-4 py-1.5 rounded-md transition-colors whitespace-nowrap shadow-sm"
             >
               Donate
-            </Link>
+            </Link> */}
 
             {/* ✅ Mobile Search Toggle Button (শুধু মোবাইলে) */}
             <button
@@ -153,7 +153,7 @@ export default function Navbar() {
               aria-label={searchOpen ? "Close search" : "Open search"}
               aria-expanded={searchOpen}
             >
-              {searchOpen ? <CloseIcon className="w-5 h-5" /> : <SearchIcon className="w-5 h-5" />}
+              {searchOpen ? <CloseIcon className="w-6 h-6" /> : <SearchIcon className="w-6 h-6" />}
             </button>
 
             {/* Brightness Icon */}
