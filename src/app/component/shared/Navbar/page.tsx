@@ -174,13 +174,13 @@ export default function Navbar() {
                   Donate
                 </Link>
             {/* User Icon */}
-            <button
+            <Link href={'/registration'}
               type="button"
               aria-label="Account"
               className="p-1.5 sm:p-2 rounded-md hover:bg-teal-light/60 transition-colors"
             >
               <UserIcon />
-            </button>
+            </Link>
 
             {/* Menu Bar / Close Button */}
             <button
