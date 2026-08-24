@@ -33,9 +33,9 @@ export default function Footer() {
         <div>
           <div className="mb-3 flex items-center gap-2.5">
 
-            <span className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-[#e0a879]">
-              <span className="text-lg">✦</span>
-            </span>
+            {/* <span className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-[#e0a879]">
+
+            </span> */}
 
             <span className="text-sm font-semibold leading-tight">
               খাজা মোজাম্মেল হক (রঃ) ফাউন্ডেশন

@@ -4,6 +4,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
 
 type NavItem = {
   href: string;
@@ -94,12 +96,15 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16 pr-2 sm:gap-2">
 
           {/* Left Side: Logo */}
-          <Link href="/" className="shrink-0 flex items-center" onClick={() => setOpen(false)}>
+          <Link href="/" className="shrink-0 flex items-center border-b-0" onClick={() => setOpen(false)}>
             <img
-              src="/logo.jpg"
+              src="/logo.png"
               alt="Logo"
               className="h-13 w-auto object-contain"
             />
+            <span className="font-semibold text-[#8A3324] text-2xl sm:text-3xl">
+                KMRF
+            </span>
           </Link>
 
           {/* Center Search Bar (Desktop) */}
@@ -177,9 +182,9 @@ export default function Navbar() {
             <Link href={'/registration'}
               type="button"
               aria-label="Account"
-              className="p-1.5 sm:p-2 rounded-md hover:bg-teal-light/60 transition-colors"
+              className="p-1.5 sm:p-2 mb-1 ms-2 text-xl sm:text-2xl rounded-md hover:bg-teal-light/60 transition-colors"
             >
-              <UserIcon />
+              <FontAwesomeIcon icon={faUser} />
             </Link>
 
             {/* Menu Bar / Close Button */}
