@@ -5,7 +5,7 @@ import Link from "next/link";
 export default function Banner() {
   return (
     <section className="w-full">
-      <div className="max-w-7xl mx-auto ">
+      <div className="mx-auto max-w-7xl ">
         <div
           className="relative h-[550px] sm:h-[650px] md:h-[600px] w-full bg-cover bg-left md:bg-left overflow-hidden shadow-sm "
           style={{

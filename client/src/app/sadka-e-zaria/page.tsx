@@ -108,7 +108,7 @@ export default function SadkaEZariaPage() {
       ========================================================= */}
       <section
         id="about"
-        className="mx-auto max-w-7xl px-5 py-24 sm:px-8 lg:px-10"
+        className="mx-auto max-w-7xl px-5 py-12 sm:px-8 lg:px-10"
       >
         <div className="grid gap-14 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
           {/* Left */}

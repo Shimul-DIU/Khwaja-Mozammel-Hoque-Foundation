@@ -1,21 +1,40 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, useRef, useEffect, ChangeEvent } from "react";
+import {
+  useState,
+  useRef,
+  useEffect,
+  ChangeEvent,
+  type ReactNode,
+  type KeyboardEvent,
+  type FormEvent,
+  type InputHTMLAttributes,
+} from "react";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheck,
   faCamera,
   faCircleNotch,
-  faDiamond,
 } from "@fortawesome/free-solid-svg-icons";
+
+import {
+  ClipboardList,
+  GraduationCap,
+  HandHeart,
+  HeartHandshake,
+  IdCard,
+  MapPin,
+  UserRound,
+  UsersRound,
+} from "lucide-react";
 
 import {
   countryList,
   divisionList,
   districtByDivision,
   thanaByDistrict,
-  divisionBnToEn,
   districtBnToEn,
   thanaBnToEn,
   khademByDistrict,
@@ -129,7 +148,10 @@ const emptyState: FormState = {
 // Utility
 // ---------------------------------------------------------------------------
 
-function toEn(reverseMap: Record<string, string>, bn: string): string {
+function toEn(
+  reverseMap: Record<string, string>,
+  bn: string
+): string {
   return reverseMap[bn] ?? bn;
 }
 
@@ -192,7 +214,7 @@ function parseCsvLine(line: string): string[] {
 function parseCsv(text: string): string[][] {
   return text
     .split("\n")
-    .map((l) => l.trim())
+    .map((line) => line.trim())
     .filter(Boolean)
     .map(parseCsvLine);
 }
@@ -383,7 +405,7 @@ function BoxInput({
 
   const handleKeyDown = (
     i: number,
-    e: React.KeyboardEvent
+    e: KeyboardEvent<HTMLInputElement>
   ) => {
     if (
       e.key === "Backspace" &&
@@ -411,7 +433,7 @@ function BoxInput({
         }
         maxLength={1}
         inputMode="text"
-        className="h-11 w-9 rounded-xl border border-stone-200 bg-white text-center text-sm font-bold text-stone-800 shadow-sm outline-none transition hover:border-[#8a3324]/50 focus:border-[#8a3324] focus:bg-amber-50/50 focus:ring-4 focus:ring-[#8a3324]/10 sm:w-10"
+        className="h-11 w-9 rounded-xl border border-stone-200 bg-white text-center text-sm font-bold text-stone-800 shadow-sm outline-none transition hover:border-[#0d3b2e]/40 focus:border-[#0d3b2e] focus:bg-[#fffcf5] focus:ring-4 focus:ring-[#d8b766]/15 sm:w-10"
       />
     )
   );
@@ -424,7 +446,7 @@ function BoxInput({
     );
   }
 
-  const grouped: React.ReactNode[] = [];
+  const grouped: ReactNode[] = [];
 
   let idx = 0;
 
@@ -444,7 +466,7 @@ function BoxInput({
       grouped.push(
         <span
           key={`sep-${gi}`}
-          className="mx-1 self-center text-[#8a3324] font-bold"
+          className="mx-1 self-center font-bold text-[#0d3b2e]"
         >
           /
         </span>
@@ -469,14 +491,14 @@ function Field({
   className = "",
 }: {
   labelBn: string;
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
 }) {
   return (
     <label
       className={`flex flex-col gap-1.5 ${className}`}
     >
-      <span className="text-xs sm:text-sm font-semibold text-stone-700 tracking-wide">
+      <span className="text-xs font-semibold tracking-wide text-stone-700 sm:text-sm">
         {labelBn}
       </span>
 
@@ -490,10 +512,10 @@ function Field({
 // ---------------------------------------------------------------------------
 
 const inputClass =
-  "w-full rounded-xl border border-amber-900/15 bg-amber-50/20 px-3.5 py-2.5 text-sm text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-[#8a3324] focus:bg-white focus:ring-4 focus:ring-[#8a3324]/10 shadow-sm hover:border-amber-300 disabled:bg-stone-100 disabled:cursor-not-allowed";
+  "w-full rounded-xl border border-amber-900/15 bg-amber-50/20 px-3.5 py-2.5 text-sm text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-[#0d3b2e] focus:bg-white focus:ring-4 focus:ring-[#d8b766]/15 shadow-sm hover:border-[#0d3b2e]/30 disabled:bg-stone-100 disabled:cursor-not-allowed";
 
 function TextInput(
-  props: React.InputHTMLAttributes<HTMLInputElement>
+  props: InputHTMLAttributes<HTMLInputElement>
 ) {
   return (
     <input
@@ -530,7 +552,7 @@ function SelectInput({
         onChange(e.target.value)
       }
       disabled={disabled}
-      className={`min-h-11 w-full rounded-xl border border-stone-200 bg-stone-50/50 px-3.5 py-2.5 text-sm text-stone-900 outline-none transition focus:border-[#8a3324] focus:bg-white focus:ring-4 focus:ring-[#8a3324]/10 shadow-sm hover:border-[#8a3324]/30 disabled:cursor-not-allowed disabled:bg-stone-100 ${className}`}
+      className={`min-h-11 w-full rounded-xl border border-stone-200 bg-stone-50/50 px-3.5 py-2.5 text-sm text-stone-900 shadow-sm outline-none transition hover:border-[#0d3b2e]/30 focus:border-[#0d3b2e] focus:bg-white focus:ring-4 focus:ring-[#d8b766]/15 disabled:cursor-not-allowed disabled:bg-stone-100 ${className}`}
     >
       <option value="">
         {placeholder || "নির্বাচন করুন..."}
@@ -546,7 +568,7 @@ function SelectInput({
 }
 
 // ---------------------------------------------------------------------------
-// Checkbox - FontAwesome
+// Checkbox
 // ---------------------------------------------------------------------------
 
 function Checkbox({
@@ -562,15 +584,15 @@ function Checkbox({
     <button
       type="button"
       onClick={() => onChange(!checked)}
-      className={`w-full flex cursor-pointer items-center gap-3 rounded-xl border p-3.5 transition select-none text-left ${checked
-        ? "border-[#8a3324] bg-amber-50/80 shadow-sm"
-        : "border-stone-200 bg-white/50 hover:bg-stone-50"
+      className={`flex w-full cursor-pointer select-none items-center gap-3 rounded-xl border p-3.5 text-left transition ${checked
+          ? "border-[#0d3b2e] bg-[#edf6f1] shadow-sm"
+          : "border-stone-200 bg-white/50 hover:bg-stone-50"
         }`}
     >
       <span
         className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border transition ${checked
-          ? "border-[#8a3324] bg-[#8a3324] text-white"
-          : "border-stone-400 bg-white"
+            ? "border-[#0d3b2e] bg-[#0d3b2e] text-white"
+            : "border-stone-400 bg-white"
           }`}
       >
         {checked && (
@@ -599,15 +621,15 @@ function RadioPill({
 }: {
   checked: boolean;
   onClick: () => void;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-xl border px-4 py-2.5 text-xs sm:text-sm font-semibold transition shadow-sm ${checked
-        ? "border-[#8a3324] bg-[#8a3324] text-white shadow-amber-900/20"
-        : "border-stone-200 bg-white text-stone-700 hover:border-amber-400 hover:bg-amber-50/50"
+      className={`rounded-xl border px-4 py-2.5 text-xs font-semibold shadow-sm transition sm:text-sm ${checked
+          ? "border-[#0d3b2e] bg-[#0d3b2e] text-white shadow-[#0d3b2e]/20"
+          : "border-stone-200 bg-white text-stone-700 hover:border-[#d8b766] hover:bg-amber-50/50"
         }`}
     >
       {children}
@@ -616,30 +638,29 @@ function RadioPill({
 }
 
 // ---------------------------------------------------------------------------
-// Section Title - FontAwesome
+// Section Title
 // ---------------------------------------------------------------------------
 
 function SectionTitle({
   title,
+  icon: Icon,
 }: {
   title: string;
+  icon: React.ElementType;
 }) {
   return (
     <div className="mb-6 mt-10 flex items-center gap-3 first:mt-0">
-      <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#8a3324]/10 text-[#8a3324]">
-        <FontAwesomeIcon
-          icon={faDiamond}
-          className="text-[9px]"
-        />
+      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#0d3b2e]/10 text-[#0d3b2e]">
+        <Icon size={16} strokeWidth={2.2} />
       </div>
 
       <div>
-        <h2 className="text-sm font-bold uppercase tracking-wider text-[#8a3324]">
+        <h2 className="text-sm font-bold uppercase tracking-wider text-[#0d3b2e]">
           {title}
         </h2>
       </div>
 
-      <div className="h-px flex-1 bg-gradient-to-r from-amber-200 to-transparent" />
+      <div className="h-px flex-1 bg-gradient-to-r from-[#d8b766]/50 to-transparent" />
     </div>
   );
 }
@@ -650,7 +671,9 @@ function SectionTitle({
 
 export default function RegistrationForm() {
   const router = useRouter();
-  const [form, setForm] = useState<FormState>(emptyState); // fixed
+
+  const [form, setForm] =
+    useState<FormState>(emptyState);
 
   const [photoPreview, setPhotoPreview] =
     useState<string | null>(null);
@@ -673,16 +696,15 @@ export default function RegistrationForm() {
   const [unionError, setUnionError] =
     useState<string | null>(null);
 
-  const set = <
-    K extends keyof FormState
-  >(
+  const set = <K extends keyof FormState>(
     key: K,
     value: FormState[K]
-  ) =>
+  ) => {
     setForm((f) => ({
       ...f,
       [key]: value,
     }));
+  };
 
   // -------------------------------------------------------------------------
   // Location
@@ -835,7 +857,7 @@ export default function RegistrationForm() {
   // -------------------------------------------------------------------------
 
   const handleSubmit = async (
-    e: React.FormEvent
+    e: FormEvent<HTMLFormElement>
   ) => {
     e.preventDefault();
 
@@ -893,7 +915,7 @@ export default function RegistrationForm() {
         }
       );
 
-      let data: any = {};
+      let data: unknown = {};
 
       try {
         data = await response.json();
@@ -901,21 +923,28 @@ export default function RegistrationForm() {
         data = {};
       }
 
+      const dataObject =
+        typeof data === "object" &&
+          data !== null
+          ? (data as Record<
+            string,
+            unknown
+          >)
+          : {};
+
       if (!response.ok) {
         throw new Error(
-          data.message ||
-          "নিবন্ধন সংরক্ষণ করা যায়নি।"
+          typeof dataObject.message ===
+            "string"
+            ? dataObject.message
+            : "নিবন্ধন সংরক্ষণ করা যায়নি।"
         );
       }
 
-      console.log(
-        "Saved:",
-        data
-      );
+      console.log("Saved:", data);
 
       setSubmitted(true);
 
-      // Redirect to dashboard after successful registration
       router.push("/dashboard");
 
       window.scrollTo({
@@ -936,8 +965,7 @@ export default function RegistrationForm() {
   };
 
   // -------------------------------------------------------------------------
-  // -------------------------------------------------------------------------
-  // UI — redesigned premium registration experience
+  // Progress
   // -------------------------------------------------------------------------
 
   const progressItems = [
@@ -947,79 +975,163 @@ export default function RegistrationForm() {
     ["04", "নেসবত", "ছাদকায়ে জারিয়া"],
   ];
 
+  // -------------------------------------------------------------------------
+  // UI
+  // -------------------------------------------------------------------------
+
   return (
-    <main className="min-h-screen bg-[#f6f3ee] text-stone-900 font-sans antialiased">
-      {/* Decorative background */}
+    <main className="min-h-screen bg-[#f6f3ee] font-sans text-stone-900 antialiased">
+
+      {/* =====================================================
+          DECORATIVE BACKGROUND
+      ===================================================== */}
       <div className="pointer-events-none fixed inset-0 -z-0 overflow-hidden">
-        <div className="absolute -left-32 -top-32 h-80 w-80 rounded-full bg-[#8a3324]/10 blur-3xl" />
-        <div className="absolute -right-40 top-1/3 h-96 w-96 rounded-full bg-amber-300/10 blur-3xl" />
-        <div className="absolute bottom-0 left-1/3 h-72 w-72 rounded-full bg-[#8a3324]/5 blur-3xl" />
+        <div className="absolute -left-32 -top-32 h-80 w-80 rounded-full bg-[#0d3b2e]/8 blur-3xl" />
+
+        <div className="absolute -right-40 top-1/3 h-96 w-96 rounded-full bg-[#d8b766]/10 blur-3xl" />
+
+        <div className="absolute bottom-0 left-1/3 h-72 w-72 rounded-full bg-[#0d3b2e]/5 blur-3xl" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-7xl px-3 py-5 sm:px-6 sm:py-8 lg:px-8">
-        {/* Top brand */}
-        <header className="relative overflow-hidden rounded-[2rem] border border-stone-200/80 bg-[#241713] text-white shadow-[0_24px_80px_rgba(61,39,27,0.18)]">
-          <div className="absolute inset-0 opacity-20 [background-image:radial-gradient(circle_at_20%_20%,#f4d7a1_0,transparent_28%),radial-gradient(circle_at_85%_70%,#8a3324_0,transparent_30%)]" />
-          <div className="relative grid gap-8 px-6 py-8 sm:px-10 sm:py-10 lg:grid-cols-[1fr_auto] lg:items-center lg:px-14">
-            <div>
-              <div className="mb-5 inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/10 px-3 py-1.5 text-xs font-semibold tracking-wide text-amber-100 backdrop-blur">
-                <span className="h-2 w-2 rounded-full bg-amber-300 shadow-[0_0_14px_rgba(252,211,77,0.8)]" />
+
+        {/* =====================================================
+            TOP BRAND HEADER
+        ===================================================== */}
+        <header className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[#0D3B2E] text-white shadow-[0_24px_80px_rgba(13,59,46,0.22)]">
+
+          {/* Glow */}
+          <div className="absolute inset-0 opacity-25 [background-image:radial-gradient(circle_at_15%_20%,#d8b766_0,transparent_28%),radial-gradient(circle_at_85%_75%,#4d9c78_0,transparent_32%)]" />
+
+          {/* Pattern */}
+          <div
+            className="pointer-events-none absolute inset-0 opacity-[0.035]"
+            style={{
+              backgroundImage: `
+                linear-gradient(
+                  30deg,
+                  #d8b766 12%,
+                  transparent 12.5%,
+                  transparent 87%,
+                  #d8b766 87.5%,
+                  #d8b766
+                ),
+                linear-gradient(
+                  150deg,
+                  #d8b766 12%,
+                  transparent 12.5%,
+                  transparent 87%,
+                  #d8b766 87.5%,
+                  #d8b766
+                )
+              `,
+              backgroundSize: "80px 140px",
+            }}
+          />
+
+          <div className="relative px-6 py-8 sm:px-10 sm:py-10 lg:px-14 lg:py-12">
+
+            <div className="max-w-4xl">
+
+              {/* Badge */}
+              <div className="mb-5 inline-flex items-center gap-3 rounded-full border border-[#d8b766]/25 bg-[#d8b766]/10 px-3 py-1.5 text-xs font-semibold tracking-wide text-[#eadfbe] backdrop-blur">
+                <span className="h-2 w-2 rounded-full bg-[#d8b766] shadow-[0_0_14px_rgba(216,183,102,0.8)]" />
+
                 ভক্তবৃন্দের তথ্য নিবন্ধন
               </div>
 
+              {/* Heading */}
               <h1 className="max-w-3xl text-2xl font-black leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl">
                 খাজা মোজাম্মেল হক (রঃ) ফাউন্ডেশন
               </h1>
 
-              <p className="mt-3 max-w-2xl text-sm leading-7 text-stone-300 sm:text-base">
-                আপনার তথ্য সঠিকভাবে পূরণ করে নিবন্ধন সম্পন্ন করুন। প্রতিটি ধাপে প্রয়োজনীয় তথ্য যাচাই করে জমা দিন।
+              {/* Description */}
+              <p className="mt-3 max-w-2xl text-sm leading-7 text-white/60 sm:text-base">
+                আপনার তথ্য সঠিকভাবে পূরণ করে নিবন্ধন সম্পন্ন করুন।
+                প্রতিটি ধাপে প্রয়োজনীয় তথ্য যাচাই করে জমা দিন।
               </p>
 
-              <div className="mt-5 flex flex-wrap gap-2 text-xs text-stone-300">
-                <span className="rounded-full bg-white/10 px-3 py-1.5">৩৭ শ্যামলীবাগ, শ্যামলী, ঢাকা-১২০৭</span>
-                <span className="rounded-full bg-white/10 px-3 py-1.5">বাংলাদেশ</span>
-              </div>
-            </div>
+              {/* Address chips */}
+              <div className="mt-5 flex flex-wrap gap-2 text-xs text-white/60">
 
-            <div className="relative mx-auto flex h-28 w-28 shrink-0 items-center justify-center rounded-[2rem] border border-amber-200/20 bg-gradient-to-br from-amber-100 to-amber-300 text-[#8a3324] shadow-2xl lg:mx-0 lg:h-36 lg:w-36">
-              <div className="absolute inset-2 rounded-[1.5rem] border border-[#8a3324]/15" />
-              <FontAwesomeIcon icon={faDiamond} className="text-4xl lg:text-5xl" />
+                <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1.5">
+                  ৩৭ শ্যামলীবাগ, শ্যামলী, ঢাকা-১২০৭
+                </span>
+
+                <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1.5">
+                  বাংলাদেশ
+                </span>
+
+              </div>
+
             </div>
           </div>
 
+          {/* Quran quote */}
           <div className="border-t border-white/10 bg-black/10 px-6 py-4 sm:px-10 lg:px-14">
-            <p className="max-w-5xl text-xs leading-6 text-stone-300 sm:text-sm">
-              “যারা নিজেদের সম্পদ আল্লাহর পথে ব্যয় করে, অতঃপর ব্যয় করার পর কোনো কথা বা কষ্ট দ্বারা তাদের অনুগ্রহ প্রকাশ করে না, তাদের প্রতিদান তাদের প্রতিপালকের নিকট রয়েছে।”
-              <span className="ml-2 font-semibold text-amber-200">— সূরা বাকারা, আয়াত: ২৬২</span>
+            <p className="max-w-5xl text-xs leading-6 text-white/60 sm:text-sm">
+              “যারা নিজেদের সম্পদ আল্লাহর পথে ব্যয় করে, অতঃপর
+              ব্যয় করার পর কোনো কথা বা কষ্ট দ্বারা তাদের অনুগ্রহ
+              প্রকাশ করে না, তাদের প্রতিদান তাদের প্রতিপালকের নিকট
+              রয়েছে।”
+
+              <span className="ml-2 font-semibold text-[#d8b766]">
+                — সূরা বাকারা, আয়াত: ২৬২
+              </span>
             </p>
           </div>
+
         </header>
 
-        {/* Progress */}
+        {/* =====================================================
+            PROGRESS
+        ===================================================== */}
         <div className="my-5 grid grid-cols-2 gap-2 sm:grid-cols-4">
-          {progressItems.map(([number, title, subtitle]) => (
-            <div key={number} className="group rounded-2xl border border-stone-200 bg-white/80 p-3 shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:shadow-md sm:p-4">
-              <div className="flex items-center gap-3">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#8a3324] text-xs font-black text-white">{number}</span>
-                <div className="min-w-0">
-                  <p className="truncate text-xs font-bold text-stone-800 sm:text-sm">{title}</p>
-                  <p className="truncate text-[10px] text-stone-500 sm:text-xs">{subtitle}</p>
+          {progressItems.map(
+            ([number, title, subtitle]) => (
+              <div
+                key={number}
+                className="group rounded-2xl border border-stone-200 bg-white/80 p-3 shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:shadow-md sm:p-4"
+              >
+                <div className="flex items-center gap-3">
+
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#0d3b2e] text-xs font-black text-white">
+                    {number}
+                  </span>
+
+                  <div className="min-w-0">
+                    <p className="truncate text-xs font-bold text-stone-800 sm:text-sm">
+                      {title}
+                    </p>
+
+                    <p className="truncate text-[10px] text-stone-500 sm:text-xs">
+                      {subtitle}
+                    </p>
+                  </div>
+
                 </div>
               </div>
-            </div>
-          ))}
+            )
+          )}
         </div>
 
-        {/* Status */}
+        {/* =====================================================
+            STATUS
+        ===================================================== */}
         {submitted && (
           <div className="mb-5 flex items-center gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm font-semibold text-emerald-800 shadow-sm">
+
             <span className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-600 text-white">
               <FontAwesomeIcon icon={faCheck} />
             </span>
+
             <div>
               <p>নিবন্ধন সফল হয়েছে</p>
-              <p className="mt-0.5 text-xs font-normal text-emerald-700">আপনার তথ্য সফলভাবে সংরক্ষণ করা হয়েছে।</p>
+              <p className="mt-0.5 text-xs font-normal text-emerald-700">
+                আপনার তথ্য সফলভাবে সংরক্ষণ করা হয়েছে।
+              </p>
             </div>
+
           </div>
         )}
 
@@ -1029,226 +1141,875 @@ export default function RegistrationForm() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="overflow-hidden rounded-[2rem] border border-stone-200 bg-white shadow-[0_24px_70px_rgba(60,45,30,0.10)]">
+        {/* =====================================================
+            MAIN FORM
+        ===================================================== */}
+        <form
+          onSubmit={handleSubmit}
+          className="overflow-hidden rounded-[2rem] border border-stone-200 bg-white shadow-[0_24px_70px_rgba(60,45,30,0.10)]"
+        >
+
+          {/* Form header */}
           <div className="border-b border-stone-100 bg-gradient-to-r from-[#fffaf2] to-white px-5 py-5 sm:px-8 lg:px-10">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#8a3324]">Registration Form</p>
-            <h2 className="mt-1 text-xl font-black tracking-tight text-stone-900 sm:text-2xl">আপনার তথ্য প্রদান করুন</h2>
-            <p className="mt-1 text-xs leading-6 text-stone-500 sm:text-sm">প্রয়োজনীয় তথ্যগুলো নির্ভুলভাবে পূরণ করুন।</p>
+
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#0d3b2e]">
+              Registration Form
+            </p>
+
+            <h2 className="mt-1 text-xl font-black tracking-tight text-stone-900 sm:text-2xl">
+              আপনার তথ্য প্রদান করুন
+            </h2>
+
+            <p className="mt-1 text-xs leading-6 text-stone-500 sm:text-sm">
+              প্রয়োজনীয় তথ্যগুলো নির্ভুলভাবে পূরণ করুন।
+            </p>
+
           </div>
 
           <div className="space-y-10 p-5 sm:p-8 lg:p-10">
-            {/* Registration */}
+
+            {/* =================================================
+                REGISTRATION
+            ================================================= */}
             <section>
-              <SectionTitle title="নিবন্ধন তথ্য" />
+              <SectionTitle
+                title="নিবন্ধন তথ্য"
+                icon={ClipboardList}
+              />
+
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+
                 <Field labelBn="উদ্দেশ্য">
-                  <TextInput value={form.purpose} onChange={(e) => set("purpose", e.target.value)} placeholder="যেমন: সেবা / সদস্যপদ" />
+                  <TextInput
+                    value={form.purpose}
+                    onChange={(e) =>
+                      set("purpose", e.target.value)
+                    }
+                    placeholder="যেমন: সেবা / সদস্যপদ"
+                  />
                 </Field>
+
                 <Field labelBn="পদবী">
-                  <TextInput value={form.designation} onChange={(e) => set("designation", e.target.value)} placeholder="পদবী লিখুন" />
+                  <TextInput
+                    value={form.designation}
+                    onChange={(e) =>
+                      set("designation", e.target.value)
+                    }
+                    placeholder="পদবী লিখুন"
+                  />
                 </Field>
+
               </div>
             </section>
 
-            {/* Personal */}
+            {/* =================================================
+                PERSONAL
+            ================================================= */}
             <section>
-              <SectionTitle title="ব্যক্তিগত তথ্য" />
+              <SectionTitle
+                title="ব্যক্তিগত তথ্য"
+                icon={UserRound}
+              />
+
               <div className="grid grid-cols-1 gap-7 lg:grid-cols-[1fr_180px]">
+
                 <div className="grid gap-5">
+
                   <Field labelBn="নাম">
-                    <TextInput required value={form.name} onChange={(e) => set("name", e.target.value)} placeholder="পূর্ণ নাম" />
+                    <TextInput
+                      required
+                      value={form.name}
+                      onChange={(e) =>
+                        set("name", e.target.value)
+                      }
+                      placeholder="পূর্ণ নাম"
+                    />
                   </Field>
+
                   <Field labelBn="পিতার নাম">
-                    <TextInput value={form.fatherName} onChange={(e) => set("fatherName", e.target.value)} placeholder="পিতার নাম" />
+                    <TextInput
+                      value={form.fatherName}
+                      onChange={(e) =>
+                        set("fatherName", e.target.value)
+                      }
+                      placeholder="পিতার নাম"
+                    />
                   </Field>
+
                   <Field labelBn="স্বামী/স্ত্রীর নাম">
-                    <TextInput value={form.spouseName} onChange={(e) => set("spouseName", e.target.value)} placeholder="স্বামী/স্ত্রীর নাম" />
+                    <TextInput
+                      value={form.spouseName}
+                      onChange={(e) =>
+                        set("spouseName", e.target.value)
+                      }
+                      placeholder="স্বামী/স্ত্রীর নাম"
+                    />
                   </Field>
+
                 </div>
 
+                {/* Photo */}
                 <div className="flex flex-col items-center gap-3">
-                  <label htmlFor="photo" className="group relative flex h-52 w-40 cursor-pointer items-center justify-center overflow-hidden rounded-2xl border border-dashed border-[#8a3324]/30 bg-[#fffaf2] shadow-inner transition hover:border-[#8a3324] hover:bg-amber-50">
+
+                  <label
+                    htmlFor="photo"
+                    className="group relative flex h-52 w-40 cursor-pointer items-center justify-center overflow-hidden rounded-2xl border border-dashed border-[#0d3b2e]/30 bg-[#fffaf2] shadow-inner transition hover:border-[#0d3b2e] hover:bg-amber-50"
+                  >
+
                     {photoPreview ? (
-                      <img src={photoPreview} alt="Applicant" className="h-full w-full object-cover" />
+                      <img
+                        src={photoPreview}
+                        alt="Applicant"
+                        className="h-full w-full object-cover"
+                      />
                     ) : (
-                      <div className="text-center text-stone-500 transition group-hover:text-[#8a3324]">
-                        <FontAwesomeIcon icon={faCamera} className="mb-3 text-3xl" />
-                        <span className="block text-xs font-bold">ছবি আপলোড</span>
-                        <span className="mt-1 block text-[10px] text-stone-400">পাসপোর্ট সাইজ</span>
+                      <div className="text-center text-stone-500 transition group-hover:text-[#0d3b2e]">
+
+                        <FontAwesomeIcon
+                          icon={faCamera}
+                          className="mb-3 text-3xl"
+                        />
+
+                        <span className="block text-xs font-bold">
+                          ছবি আপলোড
+                        </span>
+
+                        <span className="mt-1 block text-[10px] text-stone-400">
+                          পাসপোর্ট সাইজ
+                        </span>
+
                       </div>
                     )}
-                    <div className="absolute inset-x-2 bottom-2 rounded-xl bg-black/55 px-2 py-1.5 text-center text-[10px] font-semibold text-white opacity-0 transition group-hover:opacity-100">ছবি পরিবর্তন করুন</div>
+
+                    <div className="absolute inset-x-2 bottom-2 rounded-xl bg-black/55 px-2 py-1.5 text-center text-[10px] font-semibold text-white opacity-0 transition group-hover:opacity-100">
+                      ছবি পরিবর্তন করুন
+                    </div>
+
                   </label>
-                  <input id="photo" type="file" accept="image/*" onChange={handlePhoto} className="hidden" />
+
+                  <input
+                    id="photo"
+                    type="file"
+                    accept="image/*"
+                    onChange={handlePhoto}
+                    className="hidden"
+                  />
+
                 </div>
               </div>
             </section>
 
-            {/* Address */}
+            {/* =================================================
+                ADDRESS
+            ================================================= */}
             <section>
-              <SectionTitle title="স্থায়ী ঠিকানা" />
+              <SectionTitle
+                title="স্থায়ী ঠিকানা"
+                icon={MapPin}
+              />
+
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+
                 <Field labelBn="দেশ">
-                  <SelectInput value={form.country} onChange={(v) => { set("country", v); set("division", ""); set("district", ""); set("ps", ""); set("union", ""); set("po", ""); }} options={countryList} placeholder="দেশ নির্বাচন করুন..." />
+                  <SelectInput
+                    value={form.country}
+                    onChange={(v) => {
+                      set("country", v);
+                      set("division", "");
+                      set("district", "");
+                      set("ps", "");
+                      set("union", "");
+                      set("po", "");
+                    }}
+                    options={countryList}
+                    placeholder="দেশ নির্বাচন করুন..."
+                  />
                 </Field>
+
                 <Field labelBn="বিভাগ">
-                  <SelectInput value={form.division} disabled={!availableDivisions.length} onChange={(v) => { set("division", v); set("district", ""); set("ps", ""); set("union", ""); set("po", ""); }} options={availableDivisions} placeholder={form.country ? "বিভাগ নির্বাচন করুন..." : "প্রথমে দেশ নির্বাচন করুন"} />
+                  <SelectInput
+                    value={form.division}
+                    disabled={!availableDivisions.length}
+                    onChange={(v) => {
+                      set("division", v);
+                      set("district", "");
+                      set("ps", "");
+                      set("union", "");
+                      set("po", "");
+                    }}
+                    options={availableDivisions}
+                    placeholder={
+                      form.country
+                        ? "বিভাগ নির্বাচন করুন..."
+                        : "প্রথমে দেশ নির্বাচন করুন"
+                    }
+                  />
                 </Field>
+
                 <Field labelBn="জেলা">
-                  <SelectInput value={form.district} disabled={!availableDistricts.length} onChange={(v) => { set("district", v); set("ps", ""); set("union", ""); set("po", ""); }} options={availableDistricts} placeholder={form.division ? "জেলা নির্বাচন করুন..." : "প্রথমে বিভাগ নির্বাচন করুন"} />
+                  <SelectInput
+                    value={form.district}
+                    disabled={!availableDistricts.length}
+                    onChange={(v) => {
+                      set("district", v);
+                      set("ps", "");
+                      set("union", "");
+                      set("po", "");
+                    }}
+                    options={availableDistricts}
+                    placeholder={
+                      form.division
+                        ? "জেলা নির্বাচন করুন..."
+                        : "প্রথমে বিভাগ নির্বাচন করুন"
+                    }
+                  />
                 </Field>
+
                 <Field labelBn="থানা">
-                  <SelectInput value={form.ps} disabled={!form.district} onChange={(v) => { set("ps", v); set("union", ""); set("po", ""); }} options={availableThanas} placeholder={form.district ? "থানা নির্বাচন করুন..." : "প্রথমে জেলা নির্বাচন করুন"} />
+                  <SelectInput
+                    value={form.ps}
+                    disabled={!form.district}
+                    onChange={(v) => {
+                      set("ps", v);
+                      set("union", "");
+                      set("po", "");
+                    }}
+                    options={availableThanas}
+                    placeholder={
+                      form.district
+                        ? "থানা নির্বাচন করুন..."
+                        : "প্রথমে জেলা নির্বাচন করুন"
+                    }
+                  />
                 </Field>
+
                 <Field labelBn="ইউনিয়ন">
                   {loadingUnions ? (
                     <div className="flex h-11 items-center gap-2 rounded-xl border border-stone-200 bg-stone-50 px-3.5 text-sm text-stone-500">
-                      <FontAwesomeIcon icon={faCircleNotch} spin className="text-[#8a3324]" /> ইউনিয়ন লোড হচ্ছে...
+
+                      <FontAwesomeIcon
+                        icon={faCircleNotch}
+                        spin
+                        className="text-[#0d3b2e]"
+                      />
+
+                      ইউনিয়ন লোড হচ্ছে...
+
                     </div>
                   ) : (
-                    <SelectInput value={form.union} disabled={!form.ps} onChange={(v) => { set("union", v); set("po", ""); }} options={unionList} placeholder={!form.ps ? "প্রথমে থানা নির্বাচন করুন" : unionError ? "নিজে টাইপ করুন..." : "ইউনিয়ন নির্বাচন করুন..."} />
+                    <SelectInput
+                      value={form.union}
+                      disabled={!form.ps}
+                      onChange={(v) => {
+                        set("union", v);
+                        set("po", "");
+                      }}
+                      options={unionList}
+                      placeholder={
+                        !form.ps
+                          ? "প্রথমে থানা নির্বাচন করুন"
+                          : unionError
+                            ? "নিজে টাইপ করুন..."
+                            : "ইউনিয়ন নির্বাচন করুন..."
+                      }
+                    />
                   )}
-                  {unionError && !loadingUnions && <p className="mt-1.5 text-xs text-amber-700">{unionError}</p>}
+
+                  {unionError && !loadingUnions && (
+                    <p className="mt-1.5 text-xs text-amber-700">
+                      {unionError}
+                    </p>
+                  )}
                 </Field>
+
                 <Field labelBn="পোস্ট অফিস">
-                  <TextInput value={form.po} onChange={(e) => set("po", e.target.value)} placeholder="পোস্ট অফিসের নাম লিখুন" />
+                  <TextInput
+                    value={form.po}
+                    onChange={(e) =>
+                      set("po", e.target.value)
+                    }
+                    placeholder="পোস্ট অফিসের নাম লিখুন"
+                  />
                 </Field>
+
                 <Field labelBn="পোস্ট কোড">
-                  <TextInput value={form.postCode} onChange={(e) => set("postCode", e.target.value)} placeholder="পোস্ট কোড (যেমন: ১২০৭)" />
+                  <TextInput
+                    value={form.postCode}
+                    onChange={(e) =>
+                      set("postCode", e.target.value)
+                    }
+                    placeholder="পোস্ট কোড (যেমন: ১২০৭)"
+                  />
                 </Field>
-                <Field labelBn="গ্রাম/হোল্ডিং/মহল্লা" className="sm:col-span-2">
-                  <TextInput value={form.village} onChange={(e) => set("village", e.target.value)} placeholder="গ্রাম/হোল্ডিং/মহল্লা" />
+
+                <Field
+                  labelBn="গ্রাম/হোল্ডিং/মহল্লা"
+                  className="sm:col-span-2"
+                >
+                  <TextInput
+                    value={form.village}
+                    onChange={(e) =>
+                      set("village", e.target.value)
+                    }
+                    placeholder="গ্রাম/হোল্ডিং/মহল্লা"
+                  />
                 </Field>
-                <Field labelBn="রাস্তা" className="sm:col-span-2">
-                  <TextInput value={form.street} onChange={(e) => set("street", e.target.value)} placeholder="রাস্তার নাম বা নম্বর" />
+
+                <Field
+                  labelBn="রাস্তা"
+                  className="sm:col-span-2"
+                >
+                  <TextInput
+                    value={form.street}
+                    onChange={(e) =>
+                      set("street", e.target.value)
+                    }
+                    placeholder="রাস্তার নাম বা নম্বর"
+                  />
                 </Field>
-                <Field labelBn="জন্ম তারিখ" className="sm:col-span-2">
-                  <BoxInput values={form.dob} onChange={(v) => set("dob", v)} count={8} groupSizes={[2, 2, 4]} />
+
+                <Field
+                  labelBn="জন্ম তারিখ"
+                  className="sm:col-span-2"
+                >
+                  <BoxInput
+                    values={form.dob}
+                    onChange={(v) => set("dob", v)}
+                    count={8}
+                    groupSizes={[2, 2, 4]}
+                  />
                 </Field>
+
               </div>
             </section>
 
-            {/* Khadem */}
+            {/* =================================================
+                KHADEM
+            ================================================= */}
             <section>
-              <SectionTitle title="খাদেম ও প্রধান সমন্বয়কারীর তথ্য" />
-              <div className="grid grid-cols-1 gap-5 rounded-2xl border border-[#8a3324]/10 bg-[#fffaf4] p-5 sm:grid-cols-2 sm:p-6">
+              <SectionTitle
+                title="খাদেম ও প্রধান সমন্বয়কারীর তথ্য"
+                icon={UsersRound}
+              />
+
+              <div className="grid grid-cols-1 gap-5 rounded-2xl border border-[#0d3b2e]/10 bg-[#f3f8f5] p-5 sm:grid-cols-2 sm:p-6">
+
                 <Field labelBn="খাদেমের নাম (জেলা অনুযায়ী)">
-                  <SelectInput value={form.khademName} disabled={!form.district} onChange={(v) => set("khademName", v)} options={khademOptions} placeholder={form.district ? "খাদেম নির্বাচন করুন..." : "প্রথমে জেলা নির্বাচন করুন"} />
+                  <SelectInput
+                    value={form.khademName}
+                    disabled={!form.district}
+                    onChange={(v) =>
+                      set("khademName", v)
+                    }
+                    options={khademOptions}
+                    placeholder={
+                      form.district
+                        ? "খাদেম নির্বাচন করুন..."
+                        : "প্রথমে জেলা নির্বাচন করুন"
+                    }
+                  />
                 </Field>
+
                 <Field labelBn="প্রধান সমন্বয়কারীর নাম (বিভাগ অনুযায়ী)">
-                  <SelectInput value={form.coordinatorName} disabled={!form.division} onChange={(v) => set("coordinatorName", v)} options={coordinatorOptions} placeholder={form.division ? "সমন্বয়কারী নির্বাচন করুন..." : "প্রথমে বিভাগ নির্বাচন করুন"} />
+                  <SelectInput
+                    value={form.coordinatorName}
+                    disabled={!form.division}
+                    onChange={(v) =>
+                      set("coordinatorName", v)
+                    }
+                    options={coordinatorOptions}
+                    placeholder={
+                      form.division
+                        ? "সমন্বয়কারী নির্বাচন করুন..."
+                        : "প্রথমে বিভাগ নির্বাচন করুন"
+                    }
+                  />
                 </Field>
+
               </div>
             </section>
 
-            {/* Other */}
+            {/* =================================================
+                OTHER
+            ================================================= */}
             <section>
-              <SectionTitle title="অন্যান্য তথ্য" />
+              <SectionTitle
+                title="অন্যান্য তথ্য"
+                icon={ClipboardList}
+              />
+
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                <Field labelBn="ধর্ম"><TextInput value={form.religion} onChange={(e) => set("religion", e.target.value)} placeholder="যেমন: ইসলাম" /></Field>
-                <Field labelBn="রক্তের গ্রুপ"><TextInput value={form.bloodGroup} onChange={(e) => set("bloodGroup", e.target.value)} placeholder="যেমন: B+" /></Field>
-                <Field labelBn="পেশা"><TextInput value={form.profession} onChange={(e) => set("profession", e.target.value)} placeholder="পেশা লিখুন" /></Field>
-                <Field labelBn="জাতীয়তা"><TextInput value={form.nationality} onChange={(e) => set("nationality", e.target.value)} placeholder="জাতীয়তা" /></Field>
-                <Field labelBn="ই-মেইল"><TextInput type="email" value={form.email} onChange={(e) => set("email", e.target.value)} placeholder="example@mail.com" /></Field>
-                <Field labelBn="যোগাযোগের নম্বর"><TextInput type="tel" value={form.contactNo} onChange={(e) => set("contactNo", e.target.value)} placeholder="০১৭xxxxxxxx" /></Field>
+
+                <Field labelBn="ধর্ম">
+                  <TextInput
+                    value={form.religion}
+                    onChange={(e) =>
+                      set("religion", e.target.value)
+                    }
+                    placeholder="যেমন: ইসলাম"
+                  />
+                </Field>
+
+                <Field labelBn="রক্তের গ্রুপ">
+                  <TextInput
+                    value={form.bloodGroup}
+                    onChange={(e) =>
+                      set("bloodGroup", e.target.value)
+                    }
+                    placeholder="যেমন: B+"
+                  />
+                </Field>
+
+                <Field labelBn="পেশা">
+                  <TextInput
+                    value={form.profession}
+                    onChange={(e) =>
+                      set("profession", e.target.value)
+                    }
+                    placeholder="পেশা লিখুন"
+                  />
+                </Field>
+
+                <Field labelBn="জাতীয়তা">
+                  <TextInput
+                    value={form.nationality}
+                    onChange={(e) =>
+                      set("nationality", e.target.value)
+                    }
+                    placeholder="জাতীয়তা"
+                  />
+                </Field>
+
+                <Field labelBn="ই-মেইল">
+                  <TextInput
+                    type="email"
+                    value={form.email}
+                    onChange={(e) =>
+                      set("email", e.target.value)
+                    }
+                    placeholder="example@mail.com"
+                  />
+                </Field>
+
+                <Field labelBn="যোগাযোগের নম্বর">
+                  <TextInput
+                    type="tel"
+                    value={form.contactNo}
+                    onChange={(e) =>
+                      set("contactNo", e.target.value)
+                    }
+                    placeholder="০১৭xxxxxxxx"
+                  />
+                </Field>
+
               </div>
             </section>
 
-            {/* ID */}
+            {/* =================================================
+                ID
+            ================================================= */}
             <section>
-              <SectionTitle title="পরিচয়পত্র" />
+              <SectionTitle
+                title="পরিচয়পত্র"
+                icon={IdCard}
+              />
+
               <div className="rounded-2xl border border-stone-200 bg-stone-50/60 p-4 sm:p-5">
+
                 <div className="flex flex-wrap gap-2.5">
-                  {(["NID", "BRN", "PPN"] as const).map((t) => (
-                    <RadioPill key={t} checked={form.idType === t} onClick={() => set("idType", t)}>
-                      {t === "NID" && "জাতীয় পরিচয় পত্র (NID)"}
-                      {t === "BRN" && "জন্ম নিবন্ধন (BRN)"}
-                      {t === "PPN" && "পাসপোর্ট নং (PPN)"}
+
+                  {(
+                    ["NID", "BRN", "PPN"] as const
+                  ).map((t) => (
+                    <RadioPill
+                      key={t}
+                      checked={form.idType === t}
+                      onClick={() =>
+                        set("idType", t)
+                      }
+                    >
+                      {t === "NID" &&
+                        "জাতীয় পরিচয় পত্র (NID)"}
+
+                      {t === "BRN" &&
+                        "জন্ম নিবন্ধন (BRN)"}
+
+                      {t === "PPN" &&
+                        "পাসপোর্ট নং (PPN)"}
                     </RadioPill>
                   ))}
+
                 </div>
-                {form.idType && <div className="mt-5"><BoxInput values={form.idNumber} onChange={(v) => set("idNumber", v)} count={17} /></div>}
+
+                {form.idType && (
+                  <div className="mt-5">
+                    <BoxInput
+                      values={form.idNumber}
+                      onChange={(v) =>
+                        set("idNumber", v)
+                      }
+                      count={17}
+                    />
+                  </div>
+                )}
+
               </div>
             </section>
 
-            {/* Status */}
+            {/* =================================================
+                STATUS
+            ================================================= */}
             <section>
-              <SectionTitle title="ব্যক্তিগত অবস্থা" />
+              <SectionTitle
+                title="ব্যক্তিগত অবস্থা"
+                icon={UserRound}
+              />
+
               <div className="space-y-5">
+
                 <div className="flex flex-wrap gap-2.5">
-                  <RadioPill checked={form.gender === "male"} onClick={() => set("gender", "male")}>পুরুষ</RadioPill>
-                  <RadioPill checked={form.gender === "female"} onClick={() => set("gender", "female")}>মহিলা</RadioPill>
-                  <RadioPill checked={form.maritalStatus === "married"} onClick={() => set("maritalStatus", "married")}>বিবাহিত</RadioPill>
-                  <RadioPill checked={form.maritalStatus === "unmarried"} onClick={() => set("maritalStatus", "unmarried")}>অবিবাহিত</RadioPill>
+
+                  <RadioPill
+                    checked={form.gender === "male"}
+                    onClick={() =>
+                      set("gender", "male")
+                    }
+                  >
+                    পুরুষ
+                  </RadioPill>
+
+                  <RadioPill
+                    checked={form.gender === "female"}
+                    onClick={() =>
+                      set("gender", "female")
+                    }
+                  >
+                    মহিলা
+                  </RadioPill>
+
+                  <RadioPill
+                    checked={
+                      form.maritalStatus ===
+                      "married"
+                    }
+                    onClick={() =>
+                      set(
+                        "maritalStatus",
+                        "married"
+                      )
+                    }
+                  >
+                    বিবাহিত
+                  </RadioPill>
+
+                  <RadioPill
+                    checked={
+                      form.maritalStatus ===
+                      "unmarried"
+                    }
+                    onClick={() =>
+                      set(
+                        "maritalStatus",
+                        "unmarried"
+                      )
+                    }
+                  >
+                    অবিবাহিত
+                  </RadioPill>
+
                 </div>
+
                 <div className="grid max-w-md grid-cols-2 gap-4">
-                  <Field labelBn="পুত্র"><TextInput type="number" min={0} value={form.sonCount} onChange={(e) => set("sonCount", e.target.value)} placeholder="সংখ্যা" /></Field>
-                  <Field labelBn="কন্যা"><TextInput type="number" min={0} value={form.daughterCount} onChange={(e) => set("daughterCount", e.target.value)} placeholder="সংখ্যা" /></Field>
+
+                  <Field labelBn="পুত্র">
+                    <TextInput
+                      type="number"
+                      min={0}
+                      value={form.sonCount}
+                      onChange={(e) =>
+                        set(
+                          "sonCount",
+                          e.target.value
+                        )
+                      }
+                      placeholder="সংখ্যা"
+                    />
+                  </Field>
+
+                  <Field labelBn="কন্যা">
+                    <TextInput
+                      type="number"
+                      min={0}
+                      value={form.daughterCount}
+                      onChange={(e) =>
+                        set(
+                          "daughterCount",
+                          e.target.value
+                        )
+                      }
+                      placeholder="সংখ্যা"
+                    />
+                  </Field>
+
                 </div>
+
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                  <Checkbox checked={form.widow} onChange={(v) => set("widow", v)} labelBn="বিধবা" />
-                  <Checkbox checked={form.widower} onChange={(v) => set("widower", v)} labelBn="বিপত্নীক" />
-                  <Checkbox checked={form.divorced} onChange={(v) => set("divorced", v)} labelBn="তালাকপ্রাপ্ত" />
-                  <Checkbox checked={form.passedAway} onChange={(v) => set("passedAway", v)} labelBn="ইন্তেকাল প্রাপ্ত" />
-                  <Checkbox checked={form.securityVolunteer} onChange={(v) => set("securityVolunteer", v)} labelBn="নিরাপত্তা কর্মী" />
+
+                  <Checkbox
+                    checked={form.widow}
+                    onChange={(v) =>
+                      set("widow", v)
+                    }
+                    labelBn="বিধবা"
+                  />
+
+                  <Checkbox
+                    checked={form.widower}
+                    onChange={(v) =>
+                      set("widower", v)
+                    }
+                    labelBn="বিপত্নীক"
+                  />
+
+                  <Checkbox
+                    checked={form.divorced}
+                    onChange={(v) =>
+                      set("divorced", v)
+                    }
+                    labelBn="তালাকপ্রাপ্ত"
+                  />
+
+                  <Checkbox
+                    checked={form.passedAway}
+                    onChange={(v) =>
+                      set("passedAway", v)
+                    }
+                    labelBn="ইন্তেকাল প্রাপ্ত"
+                  />
+
+                  <Checkbox
+                    checked={
+                      form.securityVolunteer
+                    }
+                    onChange={(v) =>
+                      set(
+                        "securityVolunteer",
+                        v
+                      )
+                    }
+                    labelBn="নিরাপত্তা কর্মী"
+                  />
+
                 </div>
+
               </div>
             </section>
 
-            {/* Education */}
+            {/* =================================================
+                EDUCATION
+            ================================================= */}
             <section>
-              <SectionTitle title="শিক্ষাগত যোগ্যতা" />
+              <SectionTitle
+                title="শিক্ষাগত যোগ্যতা"
+                icon={GraduationCap}
+              />
+
               <div className="flex flex-wrap gap-2.5">
-                {([["underSSC", "এসএসসি-র নিচে"], ["SSC", "এসএসসি"], ["HSC", "এইচএসসি"], ["bachelors", "ব্যাচেলর"], ["masters", "মাস্টার্স"], ["doctorate", "ডক্টরেট"]] as const).map(([val, label]) => (
-                  <RadioPill key={val} checked={form.education === val} onClick={() => set("education", val)}>{label}</RadioPill>
+
+                {(
+                  [
+                    ["underSSC", "এসএসসি-র নিচে"],
+                    ["SSC", "এসএসসি"],
+                    ["HSC", "এইচএসসি"],
+                    ["bachelors", "ব্যাচেলর"],
+                    ["masters", "মাস্টার্স"],
+                    ["doctorate", "ডক্টরেট"],
+                  ] as const
+                ).map(([val, label]) => (
+                  <RadioPill
+                    key={val}
+                    checked={
+                      form.education === val
+                    }
+                    onClick={() =>
+                      set("education", val)
+                    }
+                  >
+                    {label}
+                  </RadioPill>
                 ))}
+
               </div>
             </section>
 
-            {/* Nesbot */}
+            {/* =================================================
+                NESBOT
+            ================================================= */}
             <section>
-              <SectionTitle title="নেসবত" />
+              <SectionTitle
+                title="নেসবত"
+                icon={HeartHandshake}
+              />
+
               <div className="space-y-3">
-                <Checkbox checked={form.followerMozammel} onChange={(v) => set("followerMozammel", v)} labelBn="খাজা মোজাম্মেল হক (রঃ) এর মুরিদ" />
-                <Checkbox checked={form.followerYunus} onChange={(v) => set("followerYunus", v)} labelBn="খাজা ইউনুস আলী (রঃ) এর নেসবত ভুক্ত" />
+
+                <Checkbox
+                  checked={
+                    form.followerMozammel
+                  }
+                  onChange={(v) =>
+                    set(
+                      "followerMozammel",
+                      v
+                    )
+                  }
+                  labelBn="খাজা মোজাম্মেল হক (রঃ) এর মুরিদ"
+                />
+
+                <Checkbox
+                  checked={form.followerYunus}
+                  onChange={(v) =>
+                    set(
+                      "followerYunus",
+                      v
+                    )
+                  }
+                  labelBn="খাজা ইউনুস আলী (রঃ) এর নেসবত ভুক্ত"
+                />
+
                 <div className="grid gap-3 sm:grid-cols-[auto_1fr] sm:items-center">
-                  <Checkbox checked={form.otherNesbot} onChange={(v) => set("otherNesbot", v)} labelBn="অন্য নেসবত" />
-                  {form.otherNesbot && <TextInput value={form.otherNesbotDetail} onChange={(e) => set("otherNesbotDetail", e.target.value)} placeholder="বিস্তারিত লিখুন..." />}
-                </div>
-                <div className="max-w-sm pt-2"><Field labelBn="বায়াত গ্রহণের তারিখ/সাল"><TextInput value={form.joiningDate} onChange={(e) => set("joiningDate", e.target.value)} placeholder="DD/MM/YYYY" /></Field></div>
-              </div>
-            </section>
 
-            {/* Sadka */}
-            <section>
-              <SectionTitle title="ছাদকায়ে জারিয়া" />
-              <div className="rounded-2xl border border-amber-200 bg-gradient-to-br from-[#fffaf0] to-amber-50 p-5 shadow-sm sm:p-6">
-                <Checkbox checked={form.joinSadka} onChange={(v) => set("joinSadka", v)} labelBn="ছাদকায়ে জারিয়ায় অন্তর্ভুক্তির জন্য" />
-                <p className="mt-4 rounded-xl bg-white/70 p-4 text-xs font-medium leading-6 text-[#8a3324] sm:text-sm">
-                  আমি খাজা মোজাম্মেল হক (রঃ) ফাউন্ডেশনে স্বইচ্ছায় এবারতের নিয়তে খাদেম/সহযোগী খাদেমের নিকট ছাদকায়ে জারিয়া নিয়মিত প্রদান করবো, এই মর্মে অন্তর্ভুক্ত হইলাম।
-                </p>
-              </div>
-            </section>
+                  <Checkbox
+                    checked={
+                      form.otherNesbot
+                    }
+                    onChange={(v) =>
+                      set(
+                        "otherNesbot",
+                        v
+                      )
+                    }
+                    labelBn="অন্য নেসবত"
+                  />
 
-            {/* Submit */}
-            <div className="border-t border-stone-100 pt-7">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <p className="text-xs leading-5 text-stone-500">জমা দেওয়ার আগে আপনার দেওয়া তথ্যগুলো একবার যাচাই করে নিন।</p>
-                <button type="submit" disabled={submitting} className="inline-flex min-h-12 w-full items-center justify-center rounded-2xl bg-[#8a3324] px-8 text-sm font-bold text-white shadow-lg shadow-[#8a3324]/20 transition hover:-translate-y-0.5 hover:bg-[#722a1d] hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-[#8a3324]/20 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto">
-                  {submitting ? (
-                    <><FontAwesomeIcon icon={faCircleNotch} spin className="mr-2" /> সংরক্ষণ হচ্ছে...</>
-                  ) : (
-                    <>নিবন্ধন জমা দিন <span className="ml-2">→</span></>
+                  {form.otherNesbot && (
+                    <TextInput
+                      value={
+                        form.otherNesbotDetail
+                      }
+                      onChange={(e) =>
+                        set(
+                          "otherNesbotDetail",
+                          e.target.value
+                        )
+                      }
+                      placeholder="বিস্তারিত লিখুন..."
+                    />
                   )}
+
+                </div>
+
+                <div className="max-w-sm pt-2">
+
+                  <Field labelBn="বায়াত গ্রহণের তারিখ/সাল">
+                    <TextInput
+                      value={form.joiningDate}
+                      onChange={(e) =>
+                        set(
+                          "joiningDate",
+                          e.target.value
+                        )
+                      }
+                      placeholder="DD/MM/YYYY"
+                    />
+                  </Field>
+
+                </div>
+
+              </div>
+            </section>
+
+            {/* =================================================
+                SADKA
+            ================================================= */}
+            <section>
+              <SectionTitle
+                title="ছাদকায়ে জারিয়া"
+                icon={HandHeart}
+              />
+
+              <div className="rounded-2xl border border-[#d8b766]/40 bg-gradient-to-br from-[#fffaf0] to-amber-50 p-5 shadow-sm sm:p-6">
+
+                <Checkbox
+                  checked={form.joinSadka}
+                  onChange={(v) =>
+                    set(
+                      "joinSadka",
+                      v
+                    )
+                  }
+                  labelBn="ছাদকায়ে জারিয়ায় অন্তর্ভুক্তির জন্য"
+                />
+
+                <p className="mt-4 rounded-xl bg-white/70 p-4 text-xs font-medium leading-6 text-[#0d3b2e] sm:text-sm">
+                  আমি খাজা মোজাম্মেল হক (রঃ) ফাউন্ডেশনে স্বইচ্ছায় এবারতের
+                  নিয়তে খাদেম/সহযোগী খাদেমের নিকট ছাদকায়ে জারিয়া
+                  নিয়মিত প্রদান করবো, এই মর্মে অন্তর্ভুক্ত হইলাম।
+                </p>
+
+              </div>
+            </section>
+
+            {/* =================================================
+                SUBMIT
+            ================================================= */}
+            <div className="border-t border-stone-100 pt-7">
+
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+
+                <p className="text-xs leading-5 text-stone-500">
+                  জমা দেওয়ার আগে আপনার দেওয়া তথ্যগুলো একবার যাচাই করে নিন।
+                </p>
+
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="inline-flex min-h-12 w-full items-center justify-center rounded-2xl bg-[#0d3b2e] px-8 text-sm font-bold text-white shadow-lg shadow-[#0d3b2e]/20 transition hover:-translate-y-0.5 hover:bg-[#153f32] hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-[#d8b766]/25 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+                >
+
+                  {submitting ? (
+                    <>
+                      <FontAwesomeIcon
+                        icon={faCircleNotch}
+                        spin
+                        className="mr-2"
+                      />
+                      সংরক্ষণ হচ্ছে...
+                    </>
+                  ) : (
+                    <>
+                      নিবন্ধন জমা দিন
+                      <span className="ml-2">
+                        →
+                      </span>
+                    </>
+                  )}
+
                 </button>
+
               </div>
             </div>
+
           </div>
         </form>
 
+        {/* =====================================================
+            FOOTER
+        ===================================================== */}
         <footer className="py-6 text-center text-[11px] text-stone-400">
           খাজা মোজাম্মেল হক (রঃ) ফাউন্ডেশন • নিবন্ধন পোর্টাল
         </footer>
+
       </div>
     </main>
   );
