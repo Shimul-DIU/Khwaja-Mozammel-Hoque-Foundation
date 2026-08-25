@@ -19,6 +19,24 @@ const toBoolean = (value) => {
   return value === true || value === "true";
 };
 
+// Accepts a real array, a JSON-stringified array (sent via FormData),
+// or nothing — always returns a plain JS array for pg to serialize
+// into a Postgres array literal.
+const parseArrayField = (value) => {
+  if (Array.isArray(value)) return value;
+
+  if (typeof value === "string") {
+    try {
+      const parsed = JSON.parse(value);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+
+  return [];
+};
+
 
 /*
 |--------------------------------------------------------------------------
@@ -41,7 +59,7 @@ export const createDevotee = asyncHandler(async (req, res) => {
     division,
     district,
     ps,
-    union,
+    union_name,
     po,
     postCode,
     village,
@@ -212,12 +230,12 @@ export const createDevotee = asyncHandler(async (req, res) => {
     division || null,
     district || null,
     ps || null,
-    union || null,
+    union_name || null,
     po || null,
     postCode || null,
     village || null,
     street || null,
-    dob || [],
+    parseArrayField(dob),
 
     religion || null,
     bloodGroup || null,
@@ -227,7 +245,7 @@ export const createDevotee = asyncHandler(async (req, res) => {
     contactNo || null,
 
     idType || "",
-    idNumber || [],
+    parseArrayField(idNumber),
 
     gender || "",
     maritalStatus || "",
@@ -255,7 +273,7 @@ export const createDevotee = asyncHandler(async (req, res) => {
     khademName || null,
     coordinatorName || null,
 
-    kmrfId || [],
+    parseArrayField(kmrfId),
   ];
 
   const result = await pool.query(query, values);
@@ -344,7 +362,7 @@ export const updateDevotee = asyncHandler(async (req, res) => {
     division,
     district,
     ps,
-    union,
+    union_name,
     po,
     postCode,
     village,
@@ -478,12 +496,12 @@ export const updateDevotee = asyncHandler(async (req, res) => {
     division || null,
     district || null,
     ps || null,
-    union || null,
+    union_name || null,
     po || null,
     postCode || null,
     village || null,
     street || null,
-    dob || [],
+    parseArrayField(dob),
 
     religion || null,
     bloodGroup || null,
@@ -493,7 +511,7 @@ export const updateDevotee = asyncHandler(async (req, res) => {
     contactNo || null,
 
     idType || "",
-    idNumber || [],
+    parseArrayField(idNumber),
 
     gender || "",
     maritalStatus || "",
@@ -521,7 +539,7 @@ export const updateDevotee = asyncHandler(async (req, res) => {
     khademName || null,
     coordinatorName || null,
 
-    kmrfId || [],
+    parseArrayField(kmrfId),
 
     id,
   ];

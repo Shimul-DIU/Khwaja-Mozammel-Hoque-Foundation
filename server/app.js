@@ -115,7 +115,7 @@ app.get("/", (req, res) => {
 */
 
 app.use(
-  "/api/devotees",
+  "/api/create-user",
   devoteeRoutes
 );
 

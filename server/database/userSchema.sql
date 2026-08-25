@@ -9,13 +9,14 @@ CREATE TABLE IF NOT EXISTS devotees (
     name VARCHAR(255) NOT NULL,
     father_name VARCHAR(255),
     spouse_name VARCHAR(255),
+    photo_url VARCHAR(500),
 
     -- Address
     country VARCHAR(100) DEFAULT 'বাংলাদেশ',
     division VARCHAR(100),
     district VARCHAR(100),
     ps VARCHAR(100),
-    union VARCHAR(100),
+    union_name VARCHAR(100),
     po VARCHAR(100),
     post_code VARCHAR(20),
     village VARCHAR(255),
@@ -88,6 +89,9 @@ CREATE TABLE IF NOT EXISTS devotees (
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
+
+ALTER TABLE devotees
+ADD COLUMN IF NOT EXISTS photo_url VARCHAR(500);
 
 
 -- =========================================================

@@ -102,7 +102,7 @@ export default function Navbar() {
               alt="Logo"
               className="h-13 w-auto object-contain"
             />
-            <span className="font-semibold text-[#8A3324] text-2xl sm:text-3xl">
+            <span className="font-semibold roboto-slab text-[#8A3324] text-2xl sm:text-3xl">
                 KMRF
             </span>
           </Link>
