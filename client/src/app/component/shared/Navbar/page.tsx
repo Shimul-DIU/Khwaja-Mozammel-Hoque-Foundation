@@ -1,4 +1,3 @@
-// src/components/Navbar.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -13,235 +12,404 @@ type NavItem = {
 };
 
 const links: NavItem[] = [
-  { href: "/sadka-e-zaria", label: "Sadka-E-Zaria" },
-  { href: "/scholarship", label: "Scholarship" },
-  { href: "/health", label: "Health Support" },
-  { href: "/contact", label: "Contact" },
-
+  {
+    href: "/sadka-e-zaria",
+    label: "Sadka-E-Zaria",
+  },
+  {
+    href: "/scholarship",
+    label: "Scholarship",
+  },
+  {
+    href: "/health",
+    label: "Health Support",
+  },
+  {
+    href: "/contact",
+    label: "Contact",
+  },
 ];
 
-function SunIcon({ className = "w-6 h-6" }: { className?: string }) {
+/* =========================================================
+   ICONS
+========================================================= */
+
+function SearchIcon({
+  className = "w-5 h-5",
+}: {
+  className?: string;
+}) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className={className}>
-      <circle cx="12" cy="12" r="4.5" />
-      <path d="M12 2.5v2.5M12 19v2.5M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2.5 12H5M19 12h2.5M4.2 19.8 6 18M18 6l1.8-1.8" strokeLinecap="round" />
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      className={className}
+      aria-hidden="true"
+    >
+      <circle cx="10.8" cy="10.8" r="6.8" />
+      <path d="m20 20-4.5-4.5" strokeLinecap="round" />
     </svg>
   );
 }
 
-function MoonIcon({ className = "w-6 h-6" }: { className?: string }) {
+function CloseIcon({
+  className = "w-6 h-6",
+}: {
+  className?: string;
+}) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className={className}>
-      <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z" strokeLinejoin="round" />
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M18 6 6 18" strokeLinecap="round" />
+      <path d="m6 6 12 12" strokeLinecap="round" />
     </svg>
   );
 }
 
-function UserIcon({ className = "w-6 h-6" }: { className?: string }) {
+function MenuIcon({
+  className = "w-6 h-6",
+}: {
+  className?: string;
+}) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className={className}>
-      <circle cx="12" cy="8" r="3.5" />
-      <path d="M4.5 20c1.4-3.6 4.4-5.5 7.5-5.5s6.1 1.9 7.5 5.5" strokeLinecap="round" strokeLinejoin="round" />
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M4 7h16" strokeLinecap="round" />
+      <path d="M4 12h16" strokeLinecap="round" />
+      <path d="M4 17h16" strokeLinecap="round" />
     </svg>
   );
 }
 
-function SearchIcon({ className = "w-4 h-4" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className={className}>
-      <circle cx="10.5" cy="10.5" r="6.5" />
-      <path d="m20 20-4.3-4.3" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function CloseIcon({ className = "w-6 h-6" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
-      <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function MenuIcon({ className = "w-6 h-6" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
-      <path d="M4 6h16M4 12h16M4 18h16" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
+/* =========================================================
+   NAVBAR
+========================================================= */
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
-  const [dark, setDark] = useState(false);
   const [query, setQuery] = useState("");
-  const [searchOpen, setSearchOpen] = useState(false); // ✅ নতুন স্টেট
+  const [searchOpen, setSearchOpen] = useState(false);
+
   const pathname = usePathname();
 
+  /* Close menus on route change */
   useEffect(() => {
-    document.documentElement.classList.toggle("dark", dark);
-  }, [dark]);
+    setOpen(false);
+    setSearchOpen(false);
+  }, [pathname]);
+
+  /* Prevent body scroll on mobile menu */
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("search:", query);
-    // সার্চ করার পর ইনপুট ফোকাস রিমুভ করা যায়, চাইলে
+
+    const trimmed = query.trim();
+
+    if (!trimmed) return;
+
+    console.log("search:", trimmed);
   };
 
   return (
-    <header className="sticky lg:mx-auto lg:max-w-7xl w-full bg-white top-0 z-50 bg-teal text-paper shadow-md">
-      <div className="max-w-7xl  sm:px-6">
+    <header className="sticky top-0 z-50 w-full">
 
-        {/* Top Bar */}
-        <div className="flex items-center justify-between h-16 pr-2 sm:gap-2">
+      {/* =====================================================
+          MAIN NAVBAR
+      ===================================================== */}
+      <div className="border-b border-black/10 bg-white shadow-[0_6px_25px_rgba(0,0,0,0.08)]">
 
-          {/* Left Side: Logo */}
-          <Link href="/" className="shrink-0 flex items-center border-b-0" onClick={() => setOpen(false)}>
-            <img
-              src="/logo.png"
-              alt="Logo"
-              className="h-13 w-auto object-contain"
-            />
-            <span className="font-semibold roboto-slab text-[#8A3324] text-2xl sm:text-3xl">
-                KMRF
-            </span>
-          </Link>
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
-          {/* Center Search Bar (Desktop) */}
-          <form onSubmit={handleSearch} className="hidden md:flex relative flex-1 max-w-xs  mx-4">
-            <SearchIcon className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-paper/50" />
-            <input
-              type="search"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search..."
-              aria-label="Search"
-              className="w-full bg-teal-light/40 placeholder:text-paper/50 text-sm rounded-md pl-9 pr-3 py-1.5 border border-paper/15 focus:border-gold focus:ring-1 focus:ring-gold outline-none transition-colors"
-            />
-          </form>
+          {/* =================================================
+              MAIN ROW
+          ================================================= */}
+          <div className="flex h-[78px] items-center justify-between gap-4">
 
-          {/* Desktop Nav Items */}
-          <nav className="hidden lg:flex items-center gap-2 text-sm font-medium">
-            {links.map((l) => {
-              const isActive = pathname === l.href;
-              return (
-                <Link
-                  key={l.href}
-                  href={l.href}
-                  className={`px-3   py-2 rounded-md transition-colors ${
-                    isActive
-                      ? "bg-teal-light text-gold font-semibold"
-                      : "hover:bg-teal-light/60 hover:text-gold-light"
-                  }`}
-                >
-                  {l.label}
-                </Link>
-              );
-            })}
-          </nav>
-
-          {/* Right Controls */}
-          <div className="flex items-center gap-1 sm:gap-2">
-
-            {/* Donate Button */}
-            {/* <Link
-              href="/donate"
-              className="dark:bg-[#008E48] hover:dark:bg-[#006648] text-white hover:bg-gold-light text-teal font-semibold text-xs sm:text-sm px-3 sm:px-4 py-1.5 rounded-md transition-colors whitespace-nowrap shadow-sm"
+            {/* =================================================
+                LOGO
+            ================================================= */}
+            <Link
+              href="/"
+              onClick={() => setOpen(false)}
+              className="group flex shrink-0 items-center gap-3"
             >
-              Donate
-            </Link> */}
+              <div className="relative flex h-12 w-12 md:h-14 md:w-14 items-center justify-center">
+                <div className="absolute inset-0 rounded-2xl border border-[#d8b766]/20 bg-[#d8b766]/5 transition-all duration-300 group-hover:scale-105 group-hover:border-[#d8b766]/40 group-hover:bg-[#d8b766]/10" />
 
-            {/* ✅ Mobile Search Toggle Button (শুধু মোবাইলে) */}
-             <button
-              type="button"
-              onClick={() => setSearchOpen(!searchOpen)}
-              className="md:hidden p-1.5 sm:p-2 rounded-md hover:bg-teal-light/60 transition-colors"
-              aria-label={searchOpen ? "Close search" : "Open search"}
-              aria-expanded={searchOpen}
-            >
-              {searchOpen ? <CloseIcon className="w-6 h-6" /> : <SearchIcon className="w-6 h-6" />}
-            </button>
+                <img
+                  src="/logo.png"
+                  alt="KMRF Logo"
+                  className="relative z-10 h-12 w-auto object-contain"
+                />
+              </div>
 
-            {/* Brightness Icon */}
-            {/* <button
-              type="button"
-              onClick={() => setDark((d) => !d)}
-              aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
-              aria-pressed={dark}
-              className="p-1.5 sm:p-2 rounded-md hover:bg-teal-light/60 transition-colors"
-            >
-              {dark ? <SunIcon /> : <MoonIcon />}
-            </button> */}
-              <Link
-                  href="/donate"
-                  className="bg-[#008E48] hover:bg-[#006648] text-white font-bold px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg transition-all text-sm shadow-md hover:scale-105 active:scale-95"
-                >
-                  Donate
-                </Link>
-            {/* User Icon */}
-            <Link href={'/registration'}
-              type="button"
-              aria-label="Account"
-              className="p-1.5 sm:p-2 mb-1 ms-2 text-xl sm:text-2xl rounded-md hover:bg-teal-light/60 transition-colors"
-            >
-              <FontAwesomeIcon icon={faUser} />
+              <div className="hidden sm:block">
+                <p className="text-xl font-bold tracking-tight text-black">
+                  KMRF
+                </p>
+
+                <p className="mt-0.5 max-w-[220px] text-[10px] font-medium uppercase tracking-[0.12em] text-black/50">
+                  Khwaja Mozammel Relief Foundation
+                </p>
+              </div>
             </Link>
 
-            {/* Menu Bar / Close Button */}
-            <button
-              className="lg:hidden p-1.5 sm:p-2 rounded-md hover:bg-teal-light/60 transition-colors"
-              aria-label={open ? "Close menu" : "Open menu"}
-              aria-expanded={open}
-              onClick={() => setOpen((o) => !o)}
+            {/* =================================================
+                DESKTOP SEARCH
+            ================================================= */}
+            <form
+              onSubmit={handleSearch}
+              className="relative hidden max-w-[280px] flex-1 md:block"
             >
-              {open ? <CloseIcon /> : <MenuIcon />}
-            </button>
-          </div>
-        </div>
+              <SearchIcon className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-black/40" />
 
-        {/* ✅ Mobile Search Bar – শুধু searchOpen = true হলে দেখাবে */}
-        {searchOpen && (
-          <div className="md:hidden pb-3 pt-1 animate-fadeIn">
-            <form onSubmit={handleSearch} className="relative w-full">
-              <SearchIcon className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-paper/50" />
               <input
                 type="search"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search..."
                 aria-label="Search"
-                className="w-full bg-teal-light/40 placeholder:text-paper/50 text-sm rounded-md pl-9 pr-3 py-1.5 border border-paper/15 focus:border-gold outline-none"
-                autoFocus // খোলার সাথে সাথে ফোকাস নেবে
+                className="h-11 w-full rounded-full border border-black/10 bg-[#f7f7f5] pl-10 pr-4 text-[15px] text-black outline-none transition-all placeholder:text-black/40 hover:border-black/15 hover:bg-white focus:border-[#d8b766]/70 focus:bg-white focus:ring-4 focus:ring-[#d8b766]/10"
+              />
+            </form>
+
+            {/* =================================================
+                DESKTOP NAV
+            ================================================= */}
+            <nav className="hidden items-center gap-1.5 lg:flex">
+              {links.map((item) => {
+                const isActive =
+                  pathname === item.href ||
+                  pathname.startsWith(`${item.href}/`);
+
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`group relative rounded-xl px-4 py-3 text-[15px] font-semibold transition-all duration-300 ${isActive
+                        ? "text-black"
+                        : "text-black hover:text-black"
+                      }`}
+                  >
+                    {/* Active / hover background */}
+                    <span
+                      className={`absolute inset-0 rounded-xl transition-all duration-300 ${isActive
+                          ? "bg-black/[0.05]"
+                          : "bg-transparent group-hover:bg-black/[0.04]"
+                        }`}
+                    />
+
+                    <span className="relative z-10 whitespace-nowrap">
+                      {item.label}
+                    </span>
+
+                    {/* Gold active line */}
+                    <span
+                      className={`absolute bottom-0 left-1/2 h-[2px] -translate-x-1/2 rounded-full bg-blue-700 transition-all duration-300 ${isActive
+                          ? "w-8 opacity-100"
+                          : "w-0 opacity-0 group-hover:w-5 group-hover:opacity-70"
+                        }`}
+                    />
+                  </Link>
+                );
+              })}
+            </nav>
+
+            {/* =================================================
+                RIGHT ACTIONS
+            ================================================= */}
+            <div className="flex items-center gap-2">
+
+              {/* Mobile Search */}
+              <button
+                type="button"
+                onClick={() =>
+                  setSearchOpen((prev) => !prev)
+                }
+                aria-label={
+                  searchOpen
+                    ? "Close search"
+                    : "Open search"
+                }
+                aria-expanded={searchOpen}
+                className="flex h-10 w-10 items-center justify-center rounded-xl border border-black/5 text-black transition-all hover:border-black/10 hover:bg-black/[0.04] md:hidden"
+              >
+                {searchOpen ? (
+                  <CloseIcon className="h-5 w-5" />
+                ) : (
+                  <SearchIcon className="h-5 w-5" />
+                )}
+              </button>
+
+              {/* Donate */}
+              <Link
+                href="/donate"
+                className="group relative hidden items-center justify-center overflow-hidden rounded-xl bg-[#008E48] px-5 py-3 text-[15px] font-bold text-white shadow-[0_8px_20px_rgba(0,142,72,0.18)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#006648] hover:shadow-[0_10px_24px_rgba(0,102,72,0.25)] sm:flex"
+              >
+                <span className="absolute inset-y-0 left-[-80%] w-[50%] rotate-12 bg-white/20 blur-sm transition-all duration-700 group-hover:left-[140%]" />
+
+                <span className="relative z-10">
+                  Donate
+                </span>
+              </Link>
+
+              {/* Account */}
+              <Link
+                href="/registration"
+                aria-label="Account"
+                className="group flex h-10 w-10 items-center justify-center rounded-xl border border-black/10 bg-[#F8DE9E] text-black transition-all duration-300 hover:border-[#d8b766]/50 hover:bg-[#d8b766]/10 hover:text-[#0d3b2e]"
+              >
+                <FontAwesomeIcon
+                  icon={faUser}
+                  className="text-[15px] transition-transform duration-300 group-hover:scale-110"
+                />
+              </Link>
+
+              {/* Mobile Menu */}
+              <button
+                type="button"
+                onClick={() =>
+                  setOpen((prev) => !prev)
+                }
+                aria-label={
+                  open ? "Close menu" : "Open menu"
+                }
+                aria-expanded={open}
+                className={`flex h-10 w-10 items-center justify-center rounded-xl border transition-all duration-300 lg:hidden ${open
+                    ? "border-[#d8b766]/40 bg-[#d8b766]/10 text-black"
+                    : "border-black/10 bg-white text-black hover:bg-black/[0.04]"
+                  }`}
+              >
+                {open ? (
+                  <CloseIcon className="h-5 w-5" />
+                ) : (
+                  <MenuIcon className="h-5 w-5" />
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* =================================================
+              MOBILE SEARCH
+          ================================================= */}
+          <div
+            className={`overflow-hidden transition-all duration-300 md:hidden ${searchOpen
+                ? "max-h-24 pb-4 opacity-100"
+                : "max-h-0 opacity-0"
+              }`}
+          >
+            <form
+              onSubmit={handleSearch}
+              className="relative"
+            >
+              <SearchIcon className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-black/40" />
+
+              <input
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search..."
+                aria-label="Search"
+                autoFocus={searchOpen}
+                className="h-11 w-full rounded-2xl border border-black/10 bg-[#f7f7f5] pl-10 pr-4 text-[15px] text-black outline-none placeholder:text-black/40 focus:border-[#d8b766]/70 focus:bg-white focus:ring-4 focus:ring-[#d8b766]/10"
               />
             </form>
           </div>
-        )}
 
-        {/* Mobile Nav Items Dropdown Menu */}
-        {open && (
-          <nav className="lg:hidden pb-4 pt-2 border-t border-paper/15 flex flex-col text-sm font-medium">
-            {links.map((l) => {
-              const isActive = pathname === l.href;
-              return (
-                <Link
-                  key={l.href}
-                  href={l.href}
-                  onClick={() => setOpen(false)}
-                  className={`px-3 py-2.5 rounded-md transition-colors flex items-center justify-between ${
-                    isActive
-                      ? "bg-teal-light text-gold font-bold"
-                      : "hover:bg-teal-light/50"
-                  }`}
-                >
-                  <span>{l.label}</span>
-                  <span className="text-xs text-paper/40">➔</span>
-                </Link>
-              );
-            })}
-          </nav>
-        )}
+          {/* =================================================
+              MOBILE MENU
+          ================================================= */}
+          <div
+            className={`overflow-hidden transition-all duration-300 lg:hidden ${open
+                ? "max-h-[520px] border-t border-black/10 opacity-100"
+                : "max-h-0 opacity-0"
+              }`}
+          >
+            <nav className="space-y-1 py-4">
+
+              {links.map((item, index) => {
+                const isActive =
+                  pathname === item.href ||
+                  pathname.startsWith(`${item.href}/`);
+
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setOpen(false)}
+                    className={`group flex items-center justify-between rounded-2xl px-4 py-3.5 transition-all duration-300 ${isActive
+                        ? "bg-[#0d3b2e] text-white"
+                        : "text-black hover:bg-black/[0.04]"
+                      }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <span
+                        className={`text-[11px] font-bold tracking-[0.15em] ${isActive
+                            ? "text-[#d8b766]"
+                            : "text-black/35"
+                          }`}
+                      >
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+
+                      <span
+                        className={`text-[15px] font-semibold ${isActive
+                            ? "text-white"
+                            : "text-black"
+                          }`}
+                      >
+                        {item.label}
+                      </span>
+                    </div>
+
+                    <span
+                      className={`h-2 w-2 rounded-full transition-all ${isActive
+                          ? "bg-[#d8b766]"
+                          : "bg-black/15 group-hover:bg-black/30"
+                        }`}
+                    />
+                  </Link>
+                );
+              })}
+
+              {/* Mobile Donate */}
+              <Link
+                href="/donate"
+                onClick={() => setOpen(false)}
+                className="mt-3 flex items-center justify-center rounded-2xl bg-[#008E48] px-4 py-3.5 text-[15px] font-bold text-white shadow-md transition-all duration-300 hover:bg-[#006648]"
+              >
+                Support Our Work
+              </Link>
+            </nav>
+          </div>
+        </div>
       </div>
-      <div className="lattice-divider opacity-40" />
+
+      {/* =====================================================
+          GOLD DIVIDER
+      ===================================================== */}
+      <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-[#d8b766]/50 to-transparent" />
     </header>
   );
 }

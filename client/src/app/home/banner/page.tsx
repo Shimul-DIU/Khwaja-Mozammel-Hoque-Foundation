@@ -7,14 +7,14 @@ export default function Banner() {
     <section className="w-full">
       <div className="max-w-7xl mx-auto ">
         <div
-          className="relative h-[550px] sm:h-[650px] md:h-[700px] w-full bg-cover bg-left  overflow-hidden shadow-sm border border-gray-200"
+          className="relative h-[550px] sm:h-[650px] md:h-[600px] w-full bg-cover bg-left md:bg-left overflow-hidden shadow-sm "
           style={{
-            backgroundImage: "url('/banner7.jpg')",
+            backgroundImage: "url('/banner-img.jpg')",
             backgroundRepeat: "no-repeat",
           }}
         >
           {/* ওভারলে – নিচ থেকে কালো শেড */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent"></div>
 
           {/* কন্টেন্ট – বাম দিকে সেন্টার্ড */}
           <div className="absolute z-10 top-2/5 md:top-3/6 lg:top-2/6  -translate-y-1/4 sm:-translate-y-1/3 left-6 sm:left-12 flex items-center pr-6">
