@@ -59,7 +59,7 @@ export const createDevotee = asyncHandler(async (req, res) => {
     division,
     district,
     ps,
-    union_name,
+    union,
     po,
     postCode,
     village,
@@ -148,7 +148,7 @@ export const createDevotee = asyncHandler(async (req, res) => {
       division,
       district,
       ps,
-      union_name,
+      union,
       po,
       post_code,
       village,
@@ -230,7 +230,7 @@ export const createDevotee = asyncHandler(async (req, res) => {
     division || null,
     district || null,
     ps || null,
-    union_name || null,
+    union || null,
     po || null,
     postCode || null,
     village || null,
@@ -315,7 +315,7 @@ export const getAllDevotees = asyncHandler(async (req, res) => {
 |--------------------------------------------------------------------------
 */
 
-export const getDevoteeById = asyncHandler(async (req, res) => {
+export const getSingleUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
   const result = await pool.query(
@@ -362,7 +362,7 @@ export const updateDevotee = asyncHandler(async (req, res) => {
     division,
     district,
     ps,
-    union_name,
+    union,
     po,
     postCode,
     village,
@@ -431,7 +431,7 @@ export const updateDevotee = asyncHandler(async (req, res) => {
       division = $9,
       district = $10,
       ps = $11,
-      union_name = $12,
+      union = $12,
       po = $13,
       post_code = $14,
       village = $15,
@@ -496,7 +496,7 @@ export const updateDevotee = asyncHandler(async (req, res) => {
     division || null,
     district || null,
     ps || null,
-    union_name || null,
+    union || null,
     po || null,
     postCode || null,
     village || null,

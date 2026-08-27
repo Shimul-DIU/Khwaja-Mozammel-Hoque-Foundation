@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faDiamond,
@@ -26,7 +26,12 @@ import {
   faCopy,
   faQuoteLeft,
   faMosque,
+  faCircleNotch,
+  faTriangleExclamation,
+  type IconDefinition,
 } from "@fortawesome/free-solid-svg-icons";
+
+import { getCurrentUser } from "@/services/userService";
 
 // ---------------------------------------------------------------------------
 // খাজা মোজাম্মেল হক (রঃ) ফাউন্ডেশন — ভক্ত ড্যাশবোর্ড
@@ -36,11 +41,6 @@ import {
 //   gold     #c68a3d   accent / signature
 //   cream    #fdf8f0   surface
 //   stone    #2c2c2c   dark text
-// Signature element: the "নেসবত বৃক্ষ" (lineage tree) — a hand-drawn-feeling
-// radial branch diagram rendered in SVG, the one place the design allows
-// itself real ornament. Everything else stays quiet: flat cards, one
-// weight of shadow, no gradients except the header wash already
-// established by the registration form.
 // ---------------------------------------------------------------------------
 
 type Donation = {
@@ -69,13 +69,28 @@ type MessageItem = {
   unread: boolean;
 };
 
-const user = {
-  name: "মোঃ আব্দুর রহমান",
-  initials: "আর",
-  totalDonated: "১২,৫০০",
-  eventsAttended: 4,
-  sadqahJariyah: "২,০০০",
-  profileCompletion: 75,
+// ---------------------------------------------------------------------------
+// Shape of the logged-in user, as returned by GET /api/singleUser/:id
+// NOTE: field names below (photo, district, village, contactNo,
+// followerMozammel, followerYunus, otherNesbot, totalDonated,
+// eventsAttended, sadqahJariyah) are assumed to match the registration
+// form's field names / your backend's user model. Adjust the field
+// names here if your API returns different keys.
+// ---------------------------------------------------------------------------
+
+type UserProfile = {
+  _id?: string;
+  name?: string;
+  photo?: string;
+  district?: string;
+  village?: string;
+  contactNo?: string;
+  followerMozammel?: boolean;
+  followerYunus?: boolean;
+  otherNesbot?: boolean;
+  totalDonated?: number | string;
+  eventsAttended?: number | string;
+  sadqahJariyah?: number | string;
 };
 
 const donations: Donation[] = [
@@ -128,7 +143,7 @@ const messages: MessageItem[] = [
 const notifications = [
   { text: "আপনার ৫০০ টাকা দানের রশিদ প্রস্তুত", time: "১ ঘন্টা আগে" },
   { text: "জিকির মাহফিল আগামী বুধবার", time: "৬ ঘন্টা আগে" },
-  { text: "প্রোফাইল সম্পূর্ণ করুন — মাত্র ২৫% বাকি", time: "১ দিন আগে" },
+  { text: "প্রোফাইল সম্পূর্ণ করুন — কিছু তথ্য এখনও বাকি", time: "১ দিন আগে" },
 ];
 
 const namazTimes = [
@@ -138,6 +153,35 @@ const namazTimes = [
   { name: "মাগরিব", time: "৬:১৪" },
   { name: "এশা", time: "৭:৩২" },
 ];
+
+// ---------------------------------------------------------------------------
+// Helpers derived from the real fetched user
+// ---------------------------------------------------------------------------
+
+function getInitials(name?: string): string {
+  if (!name) return "?";
+  const trimmed = name.trim();
+  return trimmed ? trimmed.charAt(0) : "?";
+}
+
+type ProfileTask = { icon: IconDefinition; label: string; done: boolean };
+
+function buildProfileTasks(user: UserProfile | null): ProfileTask[] {
+  return [
+    { icon: faCircleUser, label: "প্রোফাইল ছবি", done: Boolean(user?.photo) },
+    {
+      icon: faLocationDot,
+      label: "স্থায়ী ঠিকানা",
+      done: Boolean(user?.district && user?.village),
+    },
+    {
+      icon: faSeedling,
+      label: "নেসবত তথ্য",
+      done: Boolean(user?.followerMozammel || user?.followerYunus || user?.otherNesbot),
+    },
+    { icon: faGear, label: "জরুরি যোগাযোগ নম্বর", done: Boolean(user?.contactNo) },
+  ];
+}
 
 // ---------------------------------------------------------------------------
 // Small building blocks
@@ -190,7 +234,7 @@ function LinkOut({ label }: { label: string }) {
 // 1. Header
 // ---------------------------------------------------------------------------
 
-function DashboardHeader() {
+function DashboardHeader({ user }: { user: UserProfile | null }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
 
@@ -252,11 +296,19 @@ function DashboardHeader() {
               }}
               className="flex items-center gap-2 rounded-full border border-amber-900/10 py-1 pl-1 pr-2.5 transition hover:bg-amber-100/50"
             >
-              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#8a3324] text-[11px] font-bold text-white">
-                {user.initials}
-              </span>
+              {user?.photo ? (
+                <img
+                  src={user.photo}
+                  alt={user?.name ?? "প্রোফাইল ছবি"}
+                  className="h-7 w-7 rounded-full object-cover"
+                />
+              ) : (
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#8a3324] text-[11px] font-bold text-white">
+                  {getInitials(user?.name)}
+                </span>
+              )}
               <span className="hidden text-xs font-semibold text-stone-800 sm:block">
-                {user.name}
+                {user?.name ?? "লোড হচ্ছে..."}
               </span>
               <FontAwesomeIcon
                 icon={faChevronDown}
@@ -293,7 +345,7 @@ function StatCard({
   label,
   suffix,
 }: {
-  icon: typeof faHandHoldingHeart;
+  icon: IconDefinition;
   value: string;
   label: string;
   suffix?: string;
@@ -318,13 +370,19 @@ function StatCard({
   );
 }
 
-function WelcomeSection() {
+function WelcomeSection({
+  user,
+  profilePercent,
+}: {
+  user: UserProfile | null;
+  profilePercent: number;
+}) {
   return (
     <section>
       <div className="mb-5 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1 className="font-serif text-xl font-black text-stone-900 sm:text-2xl">
-            আসসালামু আলাইকুম, {user.name}
+            আসসালামু আলাইকুম{user?.name ? `, ${user.name}` : ""}
           </h1>
           <p className="text-xs text-stone-500 sm:text-sm">
             আপনার আধ্যাত্মিক ও দানের অগ্রগতি একনজরে দেখুন
@@ -335,22 +393,22 @@ function WelcomeSection() {
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <StatCard
           icon={faHandHoldingHeart}
-          value={`৳${user.totalDonated}`}
+          value={`৳${user?.totalDonated ?? 0}`}
           label="মোট দান (এই বছর)"
         />
         <StatCard
           icon={faCalendarCheck}
-          value={String(user.eventsAttended)}
+          value={String(user?.eventsAttended ?? 0)}
           label="অংশগ্রহণকৃত অনুষ্ঠান"
         />
         <StatCard
           icon={faSeedling}
-          value={`৳${user.sadqahJariyah}`}
+          value={`৳${user?.sadqahJariyah ?? 0}`}
           label="ছাদকায়ে জারিয়া"
         />
         <StatCard
           icon={faCircleUser}
-          value={String(user.profileCompletion)}
+          value={String(profilePercent)}
           suffix="%"
           label="প্রোফাইল সম্পূর্ণ"
         />
@@ -378,8 +436,8 @@ function QuickActions() {
           key={i}
           type="button"
           className={`flex items-center gap-3 rounded-2xl border p-4 text-left shadow-sm transition ${i === 0
-              ? "border-[#8a3324] bg-[#8a3324] text-white hover:bg-[#722a1d]"
-              : "border-amber-900/10 bg-white text-stone-800 hover:border-amber-300 hover:bg-amber-50/60"
+            ? "border-[#8a3324] bg-[#8a3324] text-white hover:bg-[#722a1d]"
+            : "border-amber-900/10 bg-white text-stone-800 hover:border-amber-300 hover:bg-amber-50/60"
             }`}
         >
           <FontAwesomeIcon icon={a.icon} className="text-base" />
@@ -440,8 +498,8 @@ function DonationManagement() {
             <div className="flex items-center gap-3">
               <span
                 className={`rounded-full px-2.5 py-1 text-[10px] font-bold ${d.status === "সম্পন্ন"
-                    ? "bg-emerald-50 text-emerald-700"
-                    : "bg-amber-100 text-amber-700"
+                  ? "bg-emerald-50 text-emerald-700"
+                  : "bg-amber-100 text-amber-700"
                   }`}
               >
                 {d.status}
@@ -536,9 +594,6 @@ function EngagementSection() {
 // ---------------------------------------------------------------------------
 
 function NesbotTree() {
-  // A quiet radial lineage diagram: root at the center, two named
-  // spiritual lines branching outward. This is the one place the
-  // design spends its ornament budget.
   return (
     <svg viewBox="0 0 320 220" className="mx-auto w-full max-w-xs">
       <g stroke="#c68a3d" strokeWidth="1.4" fill="none" opacity="0.9">
@@ -686,6 +741,75 @@ function CommunitySection() {
 }
 
 // ---------------------------------------------------------------------------
+// 8. Profile completion nudge — now computed from real fetched user fields
+// ---------------------------------------------------------------------------
+
+function ProfileCompletionNudge({
+  tasks,
+  percent,
+}: {
+  tasks: ProfileTask[];
+  percent: number;
+}) {
+  const remaining = tasks.filter((t) => !t.done).length;
+
+  return (
+    <Card className="p-5">
+      <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex-1">
+          <div className="mb-1 flex items-center gap-2 text-[#8a3324]">
+            <FontAwesomeIcon icon={faCircleUser} className="text-xs" />
+            <p className="text-xs font-bold uppercase tracking-wide">প্রোফাইল সম্পূর্ণ করুন</p>
+          </div>
+          <p className="text-xs text-stone-500 sm:text-sm">
+            {remaining > 0
+              ? `আর মাত্র ${remaining}টি তথ্য দিলেই আপনার প্রোফাইল ১০০% সম্পূর্ণ হবে`
+              : "আপনার প্রোফাইল সম্পূর্ণ হয়েছে"}
+          </p>
+
+          <div className="mt-3 h-2 w-full max-w-xs overflow-hidden rounded-full bg-amber-900/10">
+            <div
+              className="h-full rounded-full bg-[#c68a3d]"
+              style={{ width: `${percent}%` }}
+            />
+          </div>
+          <p className="mt-1.5 text-[11px] font-bold text-stone-600">
+            {percent}% সম্পূর্ণ
+          </p>
+        </div>
+
+        <div className="flex flex-wrap gap-2 sm:max-w-[260px] sm:justify-end">
+          {tasks.map((t, i) => (
+            <span
+              key={i}
+              className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[11px] font-semibold ${t.done
+                ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                : "border-[#8a3324]/30 bg-[#8a3324]/5 text-[#8a3324]"
+                }`}
+            >
+              <FontAwesomeIcon
+                icon={t.done ? faCircleCheck : t.icon}
+                className="text-[10px]"
+              />
+              {t.label}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {remaining > 0 && (
+        <button
+          type="button"
+          className="mt-4 w-full rounded-xl bg-[#8a3324] py-2.5 text-xs font-bold text-white transition hover:bg-[#722a1d] sm:w-auto sm:px-6"
+        >
+          এখনই সম্পূর্ণ করুন
+        </button>
+      )}
+    </Card>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // 9. Mobile bottom navigation
 // ---------------------------------------------------------------------------
 
@@ -724,18 +848,96 @@ function MobileBottomNav() {
 // Main dashboard
 // ---------------------------------------------------------------------------
 
-export default function UserDashboard() {
+export default function UserDashboard({ id }: { id: string }) {
+  const [user, setUser] = useState<UserProfile | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!id) {
+      setLoading(false);
+      setError("ব্যবহারকারী শনাক্ত করা যায়নি।");
+      return;
+    }
+
+    let cancelled = false;
+
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const data = await getCurrentUser(id);
+
+        if (!cancelled) {
+          setUser(data);
+        }
+      } catch (err) {
+        console.error(err);
+        if (!cancelled) {
+          setError("প্রোফাইল তথ্য লোড করতে সমস্যা হয়েছে।");
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchData();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [id]);
+
+  // Loading state — shown before the first successful fetch
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#f7f5f0]">
+        <div className="flex flex-col items-center gap-3 text-[#8a3324]">
+          <FontAwesomeIcon icon={faCircleNotch} spin className="text-2xl" />
+          <p className="text-sm font-semibold">প্রোফাইল লোড হচ্ছে...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state — fetch failed
+  if (error) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#f7f5f0] px-4">
+        <div className="max-w-sm rounded-2xl border border-red-200 bg-white p-6 text-center shadow-sm">
+          <FontAwesomeIcon icon={faTriangleExclamation} className="text-2xl text-red-500" />
+          <p className="mt-3 text-sm font-semibold text-stone-800">{error}</p>
+          <button
+            type="button"
+            onClick={() => window.location.reload()}
+            className="mt-4 rounded-xl bg-[#8a3324] px-5 py-2 text-xs font-bold text-white hover:bg-[#722a1d]"
+          >
+            আবার চেষ্টা করুন
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const profileTasks = buildProfileTasks(user);
+  const doneCount = profileTasks.filter((t) => t.done).length;
+  const profilePercent = Math.round((doneCount / profileTasks.length) * 100);
+
   return (
     <div className="min-h-screen bg-[#f7f5f0] pb-20 font-sans antialiased sm:pb-10">
-      <DashboardHeader />
+      <DashboardHeader user={user} />
 
       <main className="mx-auto max-w-6xl space-y-8 px-4 py-6 sm:px-6 sm:py-10">
-        <WelcomeSection />
+        <WelcomeSection user={user} profilePercent={profilePercent} />
         <QuickActions />
         <DonationManagement />
         <EngagementSection />
         <SpiritualCorner />
         <CommunitySection />
+        <ProfileCompletionNudge tasks={profileTasks} percent={profilePercent} />
 
         <div className="rounded-2xl border border-amber-900/10 bg-white p-4 text-center text-[11px] text-stone-400">
           <FontAwesomeIcon icon={faPlus} className="mr-1.5 hidden" />

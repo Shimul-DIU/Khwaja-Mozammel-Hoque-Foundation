@@ -6,6 +6,7 @@ import {
   getDevoteeById,
   updateDevotee,
   deleteDevotee,
+  getSingleUser,
 } from "../controllers/userController.js";
 
 import upload from "../middleware/uploadMiddleware.js";
@@ -36,7 +37,7 @@ router.get(
   "/",
   getAllDevotees
 );
-
+router.get('/:id',getSingleUser)
 
 router.get(
   "/:id",

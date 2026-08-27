@@ -118,7 +118,7 @@ app.use(
   "/api/create-user",
   devoteeRoutes
 );
-
+app.use('/api/user', devoteeRoutes)
 
 /*
 |--------------------------------------------------------------------------

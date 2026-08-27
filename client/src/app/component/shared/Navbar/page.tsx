@@ -165,7 +165,7 @@ export default function Navbar() {
               </div>
 
               <div className="hidden sm:block">
-                <p className="text-xl font-bold tracking-tight text-black">
+                <p className="text-xl roboto-slab font-bold tracking-tight text-black">
                   KMRF
                 </p>
 
@@ -265,7 +265,7 @@ export default function Navbar() {
               {/* Donate */}
               <Link
                 href="/donate"
-                className="group relative hidden items-center justify-center overflow-hidden rounded-xl bg-[#008E48] px-5 py-3 text-[15px] font-bold text-white shadow-[0_8px_20px_rgba(0,142,72,0.18)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#006648] hover:shadow-[0_10px_24px_rgba(0,102,72,0.25)] sm:flex"
+                className="group relative hidden items-center justify-center overflow-hidden rounded-xl bg-[#008E48] px-4 py-2 text-[15px] font-bold text-white shadow-[0_8px_20px_rgba(0,142,72,0.18)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#006648] hover:shadow-[0_10px_24px_rgba(0,102,72,0.25)] sm:flex"
               >
                 <span className="absolute inset-y-0 left-[-80%] w-[50%] rotate-12 bg-white/20 blur-sm transition-all duration-700 group-hover:left-[140%]" />
 

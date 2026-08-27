@@ -12,6 +12,7 @@ import {
   type InputHTMLAttributes,
 } from "react";
 
+import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheck,
@@ -40,6 +41,8 @@ import {
   khademByDistrict,
   coordinatorByDivision,
 } from "@/lib/constants/locationData";
+
+import axiosInstance from "@/lib/axios";
 
 // ---------------------------------------------------------------------------
 // খাজা মোজাম্মেল হক (রঃ) ফাউন্ডেশন — ভক্ত নিবন্ধন ফর্ম
@@ -585,14 +588,14 @@ function Checkbox({
       type="button"
       onClick={() => onChange(!checked)}
       className={`flex w-full cursor-pointer select-none items-center gap-3 rounded-xl border p-3.5 text-left transition ${checked
-          ? "border-[#0d3b2e] bg-[#edf6f1] shadow-sm"
-          : "border-stone-200 bg-white/50 hover:bg-stone-50"
+        ? "border-[#0d3b2e] bg-[#edf6f1] shadow-sm"
+        : "border-stone-200 bg-white/50 hover:bg-stone-50"
         }`}
     >
       <span
         className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border transition ${checked
-            ? "border-[#0d3b2e] bg-[#0d3b2e] text-white"
-            : "border-stone-400 bg-white"
+          ? "border-[#0d3b2e] bg-[#0d3b2e] text-white"
+          : "border-stone-400 bg-white"
           }`}
       >
         {checked && (
@@ -628,8 +631,8 @@ function RadioPill({
       type="button"
       onClick={onClick}
       className={`rounded-xl border px-4 py-2.5 text-xs font-semibold shadow-sm transition sm:text-sm ${checked
-          ? "border-[#0d3b2e] bg-[#0d3b2e] text-white shadow-[#0d3b2e]/20"
-          : "border-stone-200 bg-white text-stone-700 hover:border-[#d8b766] hover:bg-amber-50/50"
+        ? "border-[#0d3b2e] bg-[#0d3b2e] text-white shadow-[#0d3b2e]/20"
+        : "border-stone-200 bg-white text-stone-700 hover:border-[#d8b766] hover:bg-amber-50/50"
         }`}
     >
       {children}
@@ -671,7 +674,6 @@ function SectionTitle({
 
 export default function RegistrationForm() {
   const router = useRouter();
-
   const [form, setForm] =
     useState<FormState>(emptyState);
 
@@ -867,112 +869,86 @@ export default function RegistrationForm() {
 
       const formData = new FormData();
 
-      Object.entries(form).forEach(
-        ([key, value]) => {
-          if (Array.isArray(value)) {
-            formData.append(
-              key,
-              JSON.stringify(value)
-            );
-          } else {
-            formData.append(
-              key,
-              String(value)
-            );
-          }
+      Object.entries(form).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+          formData.append(key, JSON.stringify(value));
+        } else {
+          formData.append(key, String(value));
         }
-      );
+      });
 
-      const photoInput =
-        document.getElementById(
-          "photo"
-        ) as HTMLInputElement | null;
+      const photoInput = document.getElementById(
+        "photo"
+      ) as HTMLInputElement | null;
 
-      const photo =
-        photoInput?.files?.[0];
+      const photo = photoInput?.files?.[0];
 
       if (photo) {
-        formData.append(
-          "photo",
-          photo
-        );
+        formData.append("photo", photo);
       }
 
-      const apiUrl =
-        process.env.NEXT_PUBLIC_API_URL;
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
       if (!apiUrl) {
         throw new Error(
-          "NEXT_PUBLIC_API_URL সেট করা নেই। .env.local ফাইল চেক করুন।"
+          "NEXT_PUBLIC_API_URL সেট করা নেই।"
         );
       }
 
-      const response = await fetch(
-        `${apiUrl}/api/create-user`,
+      const response = await axiosInstance.post(
+        `${apiUrl}/api/devotees`,
+        formData,
         {
-          method: "POST",
-          body: formData,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         }
       );
 
-      let data: unknown = {};
+      if (response.data?.success) {
+        console.log("Saved data:", response.data.data);
 
-      try {
-        data = await response.json();
-      } catch {
-        data = {};
-      }
+        setSubmitted(true);
 
-      const dataObject =
-        typeof data === "object" &&
-          data !== null
-          ? (data as Record<
-            string,
-            unknown
-          >)
-          : {};
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
 
-      if (!response.ok) {
-        throw new Error(
-          typeof dataObject.message ===
-            "string"
-            ? dataObject.message
-            : "নিবন্ধন সংরক্ষণ করা যায়নি।"
+        router.push("/dashboard");
+      } else {
+        setSubmitError(
+          "নিবন্ধন সংরক্ষণ করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।"
         );
       }
-
-      console.log("Saved:", data);
-
-      setSubmitted(true);
-
-      router.push("/dashboard");
-
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
     } catch (error) {
       console.error(error);
 
-      setSubmitError(
-        error instanceof Error
-          ? error.message
-          : "নিবন্ধন সংরক্ষণ করতে সমস্যা হয়েছে।"
-      );
+      if (axios.isAxiosError(error)) {
+        setSubmitError(
+          error.response?.data?.message ||
+          "নিবন্ধন সংরক্ষণ করতে সমস্যা হয়েছে।"
+        );
+      } else {
+        setSubmitError(
+          error instanceof Error
+            ? error.message
+            : "নিবন্ধন সংরক্ষণ করতে সমস্যা হয়েছে।"
+        );
+      }
     } finally {
       setSubmitting(false);
     }
   };
-
   // -------------------------------------------------------------------------
   // Progress
   // -------------------------------------------------------------------------
 
   const progressItems = [
     ["01", "নিবন্ধন", "প্রাথমিক তথ্য"],
-    ["02", "ব্যক্তিগত", "পরিচয় ও ঠিকানা"],
+    ["02", "ব্যক্তিগত", "পরিচয় ও ঠিকানা"],
     ["03", "পরিবার", "শিক্ষা ও অবস্থা"],
-    ["04", "নেসবত", "ছাদকায়ে জারিয়া"],
+    ["04", "নেসবত", "ছাদকায়ে জারিয়া"],
   ];
 
   // -------------------------------------------------------------------------
@@ -981,107 +957,7 @@ export default function RegistrationForm() {
 
   return (
     <main className="min-h-screen bg-[#f6f3ee] font-sans text-stone-900 antialiased">
-
-      {/* =====================================================
-          DECORATIVE BACKGROUND
-      ===================================================== */}
-      <div className="pointer-events-none fixed inset-0 -z-0 overflow-hidden">
-        <div className="absolute -left-32 -top-32 h-80 w-80 rounded-full bg-[#0d3b2e]/8 blur-3xl" />
-
-        <div className="absolute -right-40 top-1/3 h-96 w-96 rounded-full bg-[#d8b766]/10 blur-3xl" />
-
-        <div className="absolute bottom-0 left-1/3 h-72 w-72 rounded-full bg-[#0d3b2e]/5 blur-3xl" />
-      </div>
-
-      <div className="relative z-10 mx-auto max-w-7xl px-3 py-5 sm:px-6 sm:py-8 lg:px-8">
-
-        {/* =====================================================
-            TOP BRAND HEADER
-        ===================================================== */}
-        <header className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[#0D3B2E] text-white shadow-[0_24px_80px_rgba(13,59,46,0.22)]">
-
-          {/* Glow */}
-          <div className="absolute inset-0 opacity-25 [background-image:radial-gradient(circle_at_15%_20%,#d8b766_0,transparent_28%),radial-gradient(circle_at_85%_75%,#4d9c78_0,transparent_32%)]" />
-
-          {/* Pattern */}
-          <div
-            className="pointer-events-none absolute inset-0 opacity-[0.035]"
-            style={{
-              backgroundImage: `
-                linear-gradient(
-                  30deg,
-                  #d8b766 12%,
-                  transparent 12.5%,
-                  transparent 87%,
-                  #d8b766 87.5%,
-                  #d8b766
-                ),
-                linear-gradient(
-                  150deg,
-                  #d8b766 12%,
-                  transparent 12.5%,
-                  transparent 87%,
-                  #d8b766 87.5%,
-                  #d8b766
-                )
-              `,
-              backgroundSize: "80px 140px",
-            }}
-          />
-
-          <div className="relative px-6 py-8 sm:px-10 sm:py-10 lg:px-14 lg:py-12">
-
-            <div className="max-w-4xl">
-
-              {/* Badge */}
-              <div className="mb-5 inline-flex items-center gap-3 rounded-full border border-[#d8b766]/25 bg-[#d8b766]/10 px-3 py-1.5 text-xs font-semibold tracking-wide text-[#eadfbe] backdrop-blur">
-                <span className="h-2 w-2 rounded-full bg-[#d8b766] shadow-[0_0_14px_rgba(216,183,102,0.8)]" />
-
-                ভক্তবৃন্দের তথ্য নিবন্ধন
-              </div>
-
-              {/* Heading */}
-              <h1 className="max-w-3xl text-2xl font-black leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl">
-                খাজা মোজাম্মেল হক (রঃ) ফাউন্ডেশন
-              </h1>
-
-              {/* Description */}
-              <p className="mt-3 max-w-2xl text-sm leading-7 text-white/60 sm:text-base">
-                আপনার তথ্য সঠিকভাবে পূরণ করে নিবন্ধন সম্পন্ন করুন।
-                প্রতিটি ধাপে প্রয়োজনীয় তথ্য যাচাই করে জমা দিন।
-              </p>
-
-              {/* Address chips */}
-              <div className="mt-5 flex flex-wrap gap-2 text-xs text-white/60">
-
-                <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1.5">
-                  ৩৭ শ্যামলীবাগ, শ্যামলী, ঢাকা-১২০৭
-                </span>
-
-                <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1.5">
-                  বাংলাদেশ
-                </span>
-
-              </div>
-
-            </div>
-          </div>
-
-          {/* Quran quote */}
-          <div className="border-t border-white/10 bg-black/10 px-6 py-4 sm:px-10 lg:px-14">
-            <p className="max-w-5xl text-xs leading-6 text-white/60 sm:text-sm">
-              “যারা নিজেদের সম্পদ আল্লাহর পথে ব্যয় করে, অতঃপর
-              ব্যয় করার পর কোনো কথা বা কষ্ট দ্বারা তাদের অনুগ্রহ
-              প্রকাশ করে না, তাদের প্রতিদান তাদের প্রতিপালকের নিকট
-              রয়েছে।”
-
-              <span className="ml-2 font-semibold text-[#d8b766]">
-                — সূরা বাকারা, আয়াত: ২৬২
-              </span>
-            </p>
-          </div>
-
-        </header>
+      <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
 
         {/* =====================================================
             PROGRESS
@@ -1161,7 +1037,7 @@ export default function RegistrationForm() {
             </h2>
 
             <p className="mt-1 text-xs leading-6 text-stone-500 sm:text-sm">
-              প্রয়োজনীয় তথ্যগুলো নির্ভুলভাবে পূরণ করুন।
+              প্রয়োজনীয় তথ্যগুলো নির্ভুলভাবে পূরণ করুন।
             </p>
 
           </div>
@@ -1494,7 +1370,7 @@ export default function RegistrationForm() {
 
               <div className="grid grid-cols-1 gap-5 rounded-2xl border border-[#0d3b2e]/10 bg-[#f3f8f5] p-5 sm:grid-cols-2 sm:p-6">
 
-                <Field labelBn="খাদেমের নাম (জেলা অনুযায়ী)">
+                <Field labelBn="খাদেমের নাম (জেলা অনুযায়ী)">
                   <SelectInput
                     value={form.khademName}
                     disabled={!form.district}
@@ -1510,7 +1386,7 @@ export default function RegistrationForm() {
                   />
                 </Field>
 
-                <Field labelBn="প্রধান সমন্বয়কারীর নাম (বিভাগ অনুযায়ী)">
+                <Field labelBn="প্রধান সমন্বয়কারীর নাম (বিভাগ অনুযায়ী)">
                   <SelectInput
                     value={form.coordinatorName}
                     disabled={!form.division}
@@ -1968,7 +1844,7 @@ export default function RegistrationForm() {
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 
                 <p className="text-xs leading-5 text-stone-500">
-                  জমা দেওয়ার আগে আপনার দেওয়া তথ্যগুলো একবার যাচাই করে নিন।
+                  জমা দেওয়ার আগে আপনার দেওয়া তথ্যগুলো একবার যাচাই করে নিন।
                 </p>
 
                 <button
