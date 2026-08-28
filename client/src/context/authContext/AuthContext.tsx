@@ -2,8 +2,6 @@
 
 import {
   createContext,
-  useCallback,
-  useEffect,
   useState,
   type ReactNode,
 } from "react";
@@ -34,58 +32,30 @@ export function AuthProvider({
     useState<string | null>(null);
 
   const [loading, setLoading] =
-    useState(true);
+    useState(false);
 
-  // ==================================================
-  // RESTORE SESSION
-  // ==================================================
+  const refreshSession = async () => {
+    setLoading(false);
+  };
 
-  // const refreshSession = useCallback(
-  //   async () => {
-  //     try {
-  //       setLoading(true);
+  const register = async (formData: FormData) => {
+    const response = await axiosInstance.post(
+      "/api/auth/createDevotee",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
 
-  //       const response =
-  //         await axiosInstance.post(
-  //           "/api/auth/refresh"
-  //         );
-
-  //       setUser(response.data.user);
-
-  //       setAccessToken(
-  //         response.data.accessToken
-  //       );
-  //     } catch (error) {
-  //       console.error(
-  //         "Session restore failed:",
-  //         error
-  //       );
-
-  //       setUser(null);
-  //       setAccessToken(null);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   },
-  //   []
-  // );
-
-
-
-
-  // ==================================================
-  // LOGOUT
-  // ==================================================
-
-  const login = async () => {
-    try {
-      await axiosInstance.post(
-        "/api/auth/login"
-      )
-
-    } catch (error) {
-
+    if (!response.data?.success) {
+      throw new Error(response.data?.message || "Registration failed");
     }
+
+    setUser(response.data.data ?? null);
+  };
+
   const logout = async () => {
     try {
       await axiosInstance.post(
@@ -105,10 +75,6 @@ export function AuthProvider({
   // ==================================================
   // INITIAL SESSION
   // ==================================================
-
-  useEffect(() => {
-    refreshSession();
-  }, [refreshSession]);
 
   return (
     <AuthContext.Provider

@@ -3,6 +3,7 @@
 
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 import axiosInstance from "@/lib/axios";
 import { Mail, Lock, Eye, EyeOff, Loader2 } from "lucide-react";
 import Image from "next/image";
@@ -38,7 +39,7 @@ export default function LoginPage() {
       setLoading(true);
 
       const response = await axiosInstance.post(
-        "/api/auth/login",
+        "/api/auth/loginDevotee",
         {
           email: email.trim(),
           password,
@@ -52,15 +53,15 @@ export default function LoginPage() {
       } else {
         setError(
           response.data?.message ||
-            "লগইন করা সম্ভব হয়নি।"
+          "লগইন করা সম্ভব হয়নি।"
         );
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error("Login error:", error);
 
       setError(
-        error?.response?.data?.message ||
-          "ইমেইল অথবা পাসওয়ার্ড সঠিক নয়।"
+        (axios.isAxiosError(error) && error.response?.data?.message) ||
+        "ইমেইল অথবা পাসওয়ার্ড সঠিক নয়।"
       );
     } finally {
       setLoading(false);
@@ -70,23 +71,6 @@ export default function LoginPage() {
   return (
     <main className="min-h-screen bg-[#f7f5ef] flex items-center justify-center px-4 py-10">
       <div className="w-full max-w-md">
-
-        {/* Logo / Brand */}
-        {/* <div className="text-center mb-8">
-          <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-[#123d2a] shadow-lg">
-            <span className="text-3xl font-serif text-white">
-              K
-            </span>
-          </div>
-
-          <h1 className="text-3xl font-semibold text-[#123d2a]">
-            KMRF
-          </h1>
-
-          <p className="mt-2 text-sm text-gray-600">
-            Khwaja Mozammel Hoque Foundation
-          </p>
-        </div> */}
 
         {/* Login Card */}
         <div className="rounded-2xl bg-white p-7 shadow-[0_15px_50px_rgba(0,0,0,0.08)] sm:p-9">
@@ -101,7 +85,7 @@ export default function LoginPage() {
               />
             </div>
             <p className="mt-1 roboto-slab  text-lg sm:text-2xl flex justify-center font-semibold">
-             KMRF
+              KMRF
             </p>
             <p className=" text-base flex justify-center text-gray-500"> আপনার অ্যাকাউন্টে লগইন করুন </p>
 

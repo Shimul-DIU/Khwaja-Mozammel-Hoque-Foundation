@@ -1,17 +1,15 @@
 import express from "express";
 
 import {
-  createDevotee,
+
   getAllDevotees,
-  getDevoteeById,
-  updateDevotee,
-  deleteDevotee,
-  getSingleUser,
-} from "../controllers/userController.js";
+
+  getSingleDevotee,
+} from "../controllers/devoteeController.js";
 
 import upload from "../middleware/uploadMiddleware.js";
 
-const router = express.Router();
+const devoteeRouter = express.Router();
 
 
 /*
@@ -20,7 +18,7 @@ const router = express.Router();
 |--------------------------------------------------------------------------
 */
 
-router.post(
+devoteeRouter.post(
   "/",
   upload.single("photo"),
   createDevotee
@@ -33,16 +31,13 @@ router.post(
 |--------------------------------------------------------------------------
 */
 
-router.get(
+devoteeRouter.get(
   "/",
   getAllDevotees
 );
-router.get('/:id',getSingleUser)
 
-router.get(
-  "/:id",
-  getDevoteeById
-);
+devoteeRouter.get("/singleDevotee/:id", getSingleDevotee);
+
 
 
 /*
@@ -51,7 +46,7 @@ router.get(
 |--------------------------------------------------------------------------
 */
 
-router.put(
+devoteeRouter.put(
   "/:id",
   upload.single("photo"),
   updateDevotee
@@ -64,10 +59,10 @@ router.put(
 |--------------------------------------------------------------------------
 */
 
-router.delete(
+devoteeRouter.delete(
   "/:id",
   deleteDevotee
 );
 
 
-export default router;
+export default devoteeRouter;

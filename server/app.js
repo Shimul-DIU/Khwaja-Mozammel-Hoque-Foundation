@@ -1,78 +1,26 @@
 import express from "express";
 import cors from "cors";
-
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 
-import devoteeRoutes from "./routes/userRoute.js";
+import authDevoteeRouter from "./routes/authDevoteeRoute.js";
 import errorMiddleware from "./middleware/errorMiddleware.js";
-
-
+import devoteeRouter from "./routes/devoteeRoute.js";
 
 const app = express();
 
-
-/*
-|--------------------------------------------------------------------------
-| Basic configuration
-|--------------------------------------------------------------------------
-*/
-
-
-
-
-/*
-|--------------------------------------------------------------------------
-| Security
-|--------------------------------------------------------------------------
-*/
-
 app.use(helmet());
 
-
-/*
-|--------------------------------------------------------------------------
-| CORS
-|--------------------------------------------------------------------------
-*/
-
-app.use(
-  cors({
-    origin: process.env.CLIENT_URL,
-    credentials: true,
-  })
-);
-
-
-/*
-|--------------------------------------------------------------------------
-| Body parser
-|--------------------------------------------------------------------------
-*/
+app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
 
 app.use(express.json({ limit: "5mb" }));
-
-app.use(
-  express.urlencoded({
-    extended: true,
-    limit: "5mb",
-  })
-);
-
-
-/*
-|--------------------------------------------------------------------------
-| Rate limiter
-|--------------------------------------------------------------------------
-*/
+app.use(express.urlencoded({ extended: true, limit: "5mb" }));
 
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 100,
-
   standardHeaders: "draft-8",
   legacyHeaders: false,
-
   message: {
     success: false,
     message: "অনেক বেশি request করা হয়েছে। কিছুক্ষণ পরে আবার চেষ্টা করুন।",
@@ -81,24 +29,7 @@ const apiLimiter = rateLimit({
 
 app.use("/api", apiLimiter);
 
-
-/*
-|--------------------------------------------------------------------------
-| Static files
-|--------------------------------------------------------------------------
-*/
-
-app.use(
-  "/uploads",
-  express.static("uploads")
-);
-
-
-/*
-|--------------------------------------------------------------------------
-| Health check
-|--------------------------------------------------------------------------
-*/
+app.use("/uploads", express.static("uploads"));
 
 app.get("/", (req, res) => {
   res.status(200).json({
@@ -107,24 +38,8 @@ app.get("/", (req, res) => {
   });
 });
 
-
-/*
-|--------------------------------------------------------------------------
-| API routes
-|--------------------------------------------------------------------------
-*/
-
-app.use(
-  "/api/create-user",
-  devoteeRoutes
-);
-app.use('/api/user', devoteeRoutes)
-
-/*
-|--------------------------------------------------------------------------
-| 404
-|--------------------------------------------------------------------------
-*/
+app.use("/api/auth", authDevoteeRouter);
+app.use("/api/devotee", devoteeRouter);
 
 app.use((req, res) => {
   res.status(404).json({
@@ -133,19 +48,6 @@ app.use((req, res) => {
   });
 });
 
-
-/*
-|--------------------------------------------------------------------------
-| Error handler
-|--------------------------------------------------------------------------
-*/
-
 app.use(errorMiddleware);
 
-
-/*
-|--------------------------------------------------------------------------
-| Start server
-|--------------------------------------------------------------------------
-*/
 export default app;
