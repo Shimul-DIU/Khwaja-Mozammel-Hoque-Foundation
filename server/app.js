@@ -6,6 +6,7 @@ import rateLimit from "express-rate-limit";
 import authDevoteeRouter from "./routes/authDevoteeRoute.js";
 import errorMiddleware from "./middleware/errorMiddleware.js";
 import devoteeRouter from "./routes/devoteeRoute.js";
+import donateRoute from "./routes/donationRoutes.js";
 
 const app = express();
 
@@ -40,6 +41,9 @@ app.get("/", (req, res) => {
 
 app.use("/api/auth", authDevoteeRouter);
 app.use("/api/devotee", devoteeRouter);
+
+// ====donation Route=========
+app.use("/donations", donateRoute);
 
 app.use((req, res) => {
   res.status(404).json({

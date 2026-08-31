@@ -83,3 +83,41 @@ CREATE TABLE IF NOT EXISTS devotees (
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
+
+
+-- =======dotaton table==========
+CREATE TABLE IF NOT EXISTS donations (
+    id BIGSERIAL PRIMARY KEY,
+
+    kmrf_id VARCHAR(100) NOT NULL,
+     
+    amount NUMERIC(12, 2) NOT NULL CHECK (amount > 0),
+    purpose VARCHAR(100) NOT NULL,
+    payment_method VARCHAR(20) NOT NULL
+        CHECK (
+            payment_method IN (
+                'bkash',
+                'nagad',
+                'bank',
+                'cash'
+            )
+        ),
+    sender_number VARCHAR(20),
+    transaction_id VARCHAR(100),
+    anonymous BOOLEAN NOT NULL DEFAULT FALSE,
+    status VARCHAR(20) NOT NULL DEFAULT 'pending'
+        CHECK (
+            status IN (
+                'pending',
+                'verified',
+                'rejected'
+            )
+        ),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE UNIQUE INDEX IF NOT EXISTS unique_transaction_id
+ON donations(transaction_id)
+WHERE transaction_id IS NOT NULL;
