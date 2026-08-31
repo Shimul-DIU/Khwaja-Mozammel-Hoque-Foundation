@@ -55,7 +55,7 @@ export default function LoginPage() {
           return;
         }
 
-        router.push(`/dashboard/${encodeURIComponent(String(kmrfId))}`);
+        router.push(`/dashboard?kmrfId=${encodeURIComponent(String(kmrfId))}`);
       } else {
         setError(
           response.data?.message ||

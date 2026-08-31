@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
 import { Tiro_Bangla, Hind_Siliguri } from "next/font/google";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -287,14 +286,17 @@ function buildProfileTasks(
 // ---------------------------------------------------------------------------
 
 function Card({
+  id,
   children,
   className = "",
 }: {
+  id?: string;
   children: React.ReactNode;
   className?: string;
 }) {
   return (
     <div
+      id={id}
       className={`rounded-lg border bg-[--surface] ${className}`}
       style={{
         borderColor: color.line,
@@ -740,7 +742,7 @@ function QuickActions({
       icon: faHandHoldingHeart,
       label: "দান করুন",
       primary: true,
-      href: `/dashboard/${encodeURIComponent(kmrfId)}/donate`,
+      href: `/dashboard/donate?kmrfId=${encodeURIComponent(kmrfId)}`,
     },
     {
       icon: faCalendarCheck,
@@ -1612,12 +1614,12 @@ function MobileBottomNav({
     {
       icon: faHouse,
       label: "হোম",
-      href: `/dashboard/${encodeURIComponent(kmrfId)}`,
+      href: `/dashboard?kmrfId=${encodeURIComponent(kmrfId)}`,
     },
     {
       icon: faHandHoldingHeart,
       label: "দান",
-      href: `/dashboard/${encodeURIComponent(kmrfId)}/donate`,
+      href: `/dashboard/donate?kmrfId=${encodeURIComponent(kmrfId)}`,
     },
     {
       icon: faCalendarCheck,
@@ -1674,38 +1676,13 @@ function MobileBottomNav({
 // Page
 // ---------------------------------------------------------------------------
 
+export function generateStaticParams() {
+  return [];
+}
+
 export default function UserDashboard() {
-  const params = useParams<{
-    kmrfId: string;
-  }>();
-
-  const rawKmrfId = params?.kmrfId;
-
-  let validKmrfId: string | null = null;
-
-  if (
-    rawKmrfId &&
-    typeof rawKmrfId === "string"
-  ) {
-    try {
-      const decoded = decodeURIComponent(
-        rawKmrfId
-      ).trim();
-
-      if (
-        decoded &&
-        decoded !== "null" &&
-        decoded !== "undefined"
-      ) {
-        validKmrfId = decoded;
-      }
-    } catch (error) {
-      console.error(
-        "Invalid KMRF ID:",
-        error
-      );
-    }
-  }
+  const [validKmrfId, setValidKmrfId] = useState<string | null>(null);
+  const [resolvedKmrfId, setResolvedKmrfId] = useState(false);
 
   const [user, setUser] =
     useState<UserProfile | null>(null);
@@ -1717,13 +1694,24 @@ export default function UserDashboard() {
     useState<string | null>(null);
 
   useEffect(() => {
+    const queryKmrfId = new URLSearchParams(window.location.search).get("kmrfId");
+    const decodedKmrfId = queryKmrfId ? decodeURIComponent(queryKmrfId).trim() : "";
+
+    setValidKmrfId(
+      decodedKmrfId &&
+        !["null", "undefined"].includes(decodedKmrfId.toLowerCase())
+        ? decodedKmrfId
+        : null
+    );
+    setResolvedKmrfId(true);
+  }, []);
+
+  useEffect(() => {
+    if (!resolvedKmrfId) return;
+
     if (!validKmrfId) {
-      setError(
-        "প্রোফাইল আইডি পাওয়া যায়নি।"
-      );
-
+      setError("প্রোফাইল আইডি পাওয়া যায়নি।");
       setLoading(false);
-
       return;
     }
 
@@ -1776,7 +1764,7 @@ export default function UserDashboard() {
     return () => {
       cancelled = true;
     };
-  }, [validKmrfId]);
+  }, [resolvedKmrfId, validKmrfId]);
 
   // -------------------------------------------------------------------------
   // Loading

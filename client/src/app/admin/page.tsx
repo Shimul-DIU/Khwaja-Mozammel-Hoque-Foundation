@@ -1083,9 +1083,13 @@ function ApplicationsTable({
                 </td>
 
                 <td className="max-w-[220px] truncate px-4 py-3 text-stone-600">
-                  {row[
-                    extraColumn.key
-                  ]}
+                  {extraColumn.key === "institution"
+                    ? "institution" in row
+                      ? row.institution
+                      : ""
+                    : "reason" in row
+                      ? row.reason
+                      : ""}
                 </td>
 
                 <td className="px-4 py-3 text-stone-500">
@@ -1967,8 +1971,8 @@ export default function KmrfAdminDashboard() {
 
       <aside
         className={`fixed inset-y-0 left-0 z-30 w-64 transform bg-emerald-950 text-emerald-50 transition-transform duration-200 md:static md:translate-x-0 ${sidebarOpen
-            ? "translate-x-0"
-            : "-translate-x-full"
+          ? "translate-x-0"
+          : "-translate-x-full"
           }`}
       >
         <div className="flex items-center gap-2 border-b border-emerald-900/60 px-5 py-5">
@@ -2004,8 +2008,8 @@ export default function KmrfAdminDashboard() {
                   );
                 }}
                 className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition ${section === key
-                    ? "border-l-2 border-amber-400 bg-emerald-900/70 font-medium text-white"
-                    : "border-l-2 border-transparent text-emerald-100/70 hover:bg-emerald-900/40"
+                  ? "border-l-2 border-amber-400 bg-emerald-900/70 font-medium text-white"
+                  : "border-l-2 border-transparent text-emerald-100/70 hover:bg-emerald-900/40"
                   }`}
               >
                 <Icon className="h-4 w-4" />
@@ -2187,8 +2191,8 @@ export default function KmrfAdminDashboard() {
                     >
                       <RefreshCw
                         className={`h-3.5 w-3.5 ${loadingDonations
-                            ? "animate-spin"
-                            : ""
+                          ? "animate-spin"
+                          : ""
                           }`}
                       />
 
