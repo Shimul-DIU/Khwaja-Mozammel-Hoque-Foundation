@@ -18,12 +18,6 @@ const devoteeRouter = express.Router();
 |--------------------------------------------------------------------------
 */
 
-devoteeRouter.post(
-  "/",
-  upload.single("photo"),
-  createDevotee
-);
-
 
 /*
 |--------------------------------------------------------------------------
@@ -46,23 +40,23 @@ devoteeRouter.get("/singleDevotee/:id", getSingleDevotee);
 |--------------------------------------------------------------------------
 */
 
-devoteeRouter.put(
-  "/:id",
-  upload.single("photo"),
-  updateDevotee
-);
+// devoteeRouter.put(
+//   "/:id",
+//   upload.single("photo"),
+//   updateDevotee
+// );
 
 
-/*
-|--------------------------------------------------------------------------
-| Delete
-|--------------------------------------------------------------------------
-*/
+// /*
+// |--------------------------------------------------------------------------
+// | Delete
+// |--------------------------------------------------------------------------
+// */
 
-devoteeRouter.delete(
-  "/:id",
-  deleteDevotee
-);
+// devoteeRouter.delete(
+//   "/:id",
+//   deleteDevotee
+// );
 
 
 export default devoteeRouter;

@@ -1,6 +1,11 @@
+CREATE SEQUENCE IF NOT EXISTS kmrf_id_seq
+START 1
+INCREMENT 1;
+
+
 CREATE TABLE IF NOT EXISTS devotees (
     kmrf_id VARCHAR(30) PRIMARY KEY
-    -- DEFAULT 'KMRF-' || LPAD(nextval('kmrf_id_seq')::TEXT, 6, '0')
+    DEFAULT 'KMRF-' || LPAD(nextval('kmrf_id_seq')::TEXT, 6, '0'),
 
     purpose VARCHAR(255),
     designation VARCHAR(255),

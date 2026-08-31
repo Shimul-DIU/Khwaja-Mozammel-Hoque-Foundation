@@ -46,10 +46,16 @@ export default function LoginPage() {
         }
       );
 
-      console.log("Login response:", response.data);
-
       if (response.data?.success) {
-        router.push("/dashboard");
+        const userData = response.data?.data;
+        const kmrfId = userData?.kmrf_id ?? userData?.kmrfId ?? userData?.id;
+
+        if (!kmrfId) {
+          setError("লগইন সফল হয়েছে, কিন্তু প্রোফাইল আইডি পাওয়া যায়নি।");
+          return;
+        }
+
+        router.push(`/dashboard/${encodeURIComponent(String(kmrfId))}`);
       } else {
         setError(
           response.data?.message ||
