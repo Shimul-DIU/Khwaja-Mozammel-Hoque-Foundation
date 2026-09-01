@@ -1,16 +1,22 @@
 {
   "hosting": {
     "public": "out",
+    "redirects": [
+      {
+        "source": "/admin",
+        "destination": "/admin.html",
+        "type": 301
+      },
+      {
+        "source": "/admin/",
+        "destination": "/admin.html",
+        "type": 301
+      }
+    ],
     "ignore": [
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
-    ],
-    "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
     ]
   }
 }

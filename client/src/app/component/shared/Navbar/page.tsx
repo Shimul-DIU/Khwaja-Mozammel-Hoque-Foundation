@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 
@@ -28,6 +28,13 @@ const links: NavItem[] = [
     href: "/contact",
     label: "Contact",
   },
+];
+
+const roles = [
+  { key: "user", label: "User" },
+  { key: "khadem", label: "Khadem" },
+  { key: "kordinator", label: "Kordinator" },
+  { key: "admin", label: "Admin" },
 ];
 
 /* =========================================================
@@ -95,6 +102,25 @@ function MenuIcon({
   );
 }
 
+function ChevronDownIcon({
+  className = "w-4 h-4",
+}: {
+  className?: string;
+}) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="m6 9 6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 /* =========================================================
    NAVBAR
 ========================================================= */
@@ -103,13 +129,18 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
+
+  const accountRef = useRef<HTMLDivElement>(null);
 
   const pathname = usePathname();
+  const router = useRouter();
 
   /* Close menus on route change */
   useEffect(() => {
     setOpen(false);
     setSearchOpen(false);
+    setAccountOpen(false);
   }, [pathname]);
 
   /* Prevent body scroll on mobile menu */
@@ -121,6 +152,34 @@ export default function Navbar() {
     };
   }, [open]);
 
+  /* Close account dropdown on outside click */
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (
+        accountRef.current &&
+        !accountRef.current.contains(e.target as Node)
+      ) {
+        setAccountOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () =>
+      document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  /* Close account dropdown on Escape */
+  useEffect(() => {
+    function handleEsc(e: KeyboardEvent) {
+      if (e.key === "Escape") setAccountOpen(false);
+    }
+
+    document.addEventListener("keydown", handleEsc);
+
+    return () => document.removeEventListener("keydown", handleEsc);
+  }, []);
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -129,6 +188,11 @@ export default function Navbar() {
     if (!trimmed) return;
 
     console.log("search:", trimmed);
+  };
+
+  const handleRoleClick = (roleKey: string) => {
+    setAccountOpen(false);
+    router.push(`/login?role=${roleKey}`);
   };
 
   return (
@@ -208,15 +272,15 @@ export default function Navbar() {
                     key={item.href}
                     href={item.href}
                     className={`group relative rounded-xl px-4 py-3 text-[15px] font-semibold transition-all duration-300 ${isActive
-                        ? "text-black"
-                        : "text-black hover:text-black"
+                      ? "text-black"
+                      : "text-black hover:text-black"
                       }`}
                   >
                     {/* Active / hover background */}
                     <span
                       className={`absolute inset-0 rounded-xl transition-all duration-300 ${isActive
-                          ? "bg-black/[0.05]"
-                          : "bg-transparent group-hover:bg-black/[0.04]"
+                        ? "bg-black/[0.05]"
+                        : "bg-transparent group-hover:bg-black/[0.04]"
                         }`}
                     />
 
@@ -227,8 +291,8 @@ export default function Navbar() {
                     {/* Gold active line */}
                     <span
                       className={`absolute bottom-0 left-1/2 h-[2px] -translate-x-1/2 rounded-full bg-blue-700 transition-all duration-300 ${isActive
-                          ? "w-8 opacity-100"
-                          : "w-0 opacity-0 group-hover:w-5 group-hover:opacity-70"
+                        ? "w-8 opacity-100"
+                        : "w-0 opacity-0 group-hover:w-5 group-hover:opacity-70"
                         }`}
                     />
                   </Link>
@@ -274,17 +338,57 @@ export default function Navbar() {
                 </span>
               </Link>
 
-              {/* Account */}
-              <Link
-                href="/registration"
-                aria-label="Account"
-                className="group flex h-10 w-10 items-center justify-center rounded-xl border border-black/10 bg-[#F8DE9E] text-black transition-all duration-300 hover:border-[#d8b766]/50 hover:bg-[#d8b766]/10 hover:text-[#0d3b2e]"
-              >
-                <FontAwesomeIcon
-                  icon={faUser}
-                  className="text-[15px] transition-transform duration-300 group-hover:scale-110"
-                />
-              </Link>
+              {/* Account (with role dropdown) */}
+              <div className="relative" ref={accountRef}>
+                <button
+                  type="button"
+                  onClick={() => setAccountOpen((prev) => !prev)}
+                  aria-label="Account"
+                  aria-haspopup="true"
+                  aria-expanded={accountOpen}
+                  className={`group flex h-10 items-center justify-center gap-1 rounded-xl border px-2.5 text-black transition-all duration-300 ${accountOpen
+                    ? "border-[#d8b766]/50 bg-[#d8b766]/10 text-[#0d3b2e]"
+                    : "border-black/10 bg-[#F8DE9E] hover:border-[#d8b766]/50 hover:bg-[#d8b766]/10 hover:text-[#0d3b2e]"
+                    }`}
+                >
+                  <FontAwesomeIcon
+                    icon={faUser}
+                    className="text-[15px] transition-transform duration-300 group-hover:scale-110"
+                  />
+                  <ChevronDownIcon
+                    className={`h-3.5 w-3.5 transition-transform duration-300 ${accountOpen ? "rotate-180" : ""
+                      }`}
+                  />
+                </button>
+
+                {/* Dropdown */}
+                <div
+                  className={`absolute right-0 top-[calc(100%+10px)] z-50 w-48 origin-top-right overflow-hidden rounded-2xl border border-black/10 bg-white shadow-[0_15px_40px_rgba(0,0,0,0.12)] transition-all duration-200 ${accountOpen
+                    ? "scale-100 opacity-100"
+                    : "pointer-events-none scale-95 opacity-0"
+                    }`}
+                >
+                  {/* <div className="border-b border-black/5 px-4 py-2.5">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-black/40">
+                      Login As
+                    </p>
+                  </div> */}
+
+                  <ul className="py-1.5">
+                    {roles.map((role) => (
+                      <li key={role.key}>
+                        <button
+                          type="button"
+                          onClick={() => handleRoleClick(role.key)}
+                          className="flex w-full items-center px-4 py-2.5 text-left text-[14px] font-medium text-black transition-colors hover:bg-[#d8b766]/10"
+                        >
+                          {role.label}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
 
               {/* Mobile Menu */}
               <button
@@ -297,8 +401,8 @@ export default function Navbar() {
                 }
                 aria-expanded={open}
                 className={`flex h-10 w-10 items-center justify-center rounded-xl border transition-all duration-300 lg:hidden ${open
-                    ? "border-[#d8b766]/40 bg-[#d8b766]/10 text-black"
-                    : "border-black/10 bg-white text-black hover:bg-black/[0.04]"
+                  ? "border-[#d8b766]/40 bg-[#d8b766]/10 text-black"
+                  : "border-black/10 bg-white text-black hover:bg-black/[0.04]"
                   }`}
               >
                 {open ? (
@@ -315,8 +419,8 @@ export default function Navbar() {
           ================================================= */}
           <div
             className={`overflow-hidden transition-all duration-300 md:hidden ${searchOpen
-                ? "max-h-24 pb-4 opacity-100"
-                : "max-h-0 opacity-0"
+              ? "max-h-24 pb-4 opacity-100"
+              : "max-h-0 opacity-0"
               }`}
           >
             <form
@@ -342,8 +446,8 @@ export default function Navbar() {
           ================================================= */}
           <div
             className={`overflow-hidden transition-all duration-300 lg:hidden ${open
-                ? "max-h-[520px] border-t border-black/10 opacity-100"
-                : "max-h-0 opacity-0"
+              ? "max-h-[640px] border-t border-black/10 opacity-100"
+              : "max-h-0 opacity-0"
               }`}
           >
             <nav className="space-y-1 py-4">
@@ -359,15 +463,15 @@ export default function Navbar() {
                     href={item.href}
                     onClick={() => setOpen(false)}
                     className={`group flex items-center justify-between rounded-2xl px-4 py-3.5 transition-all duration-300 ${isActive
-                        ? "bg-[#0d3b2e] text-white"
-                        : "text-black hover:bg-black/[0.04]"
+                      ? "bg-[#0d3b2e] text-white"
+                      : "text-black hover:bg-black/[0.04]"
                       }`}
                   >
                     <div className="flex items-center gap-3">
                       <span
                         className={`text-[11px] font-bold tracking-[0.15em] ${isActive
-                            ? "text-[#d8b766]"
-                            : "text-black/35"
+                          ? "text-[#d8b766]"
+                          : "text-black/35"
                           }`}
                       >
                         {String(index + 1).padStart(2, "0")}
@@ -375,8 +479,8 @@ export default function Navbar() {
 
                       <span
                         className={`text-[15px] font-semibold ${isActive
-                            ? "text-white"
-                            : "text-black"
+                          ? "text-white"
+                          : "text-black"
                           }`}
                       >
                         {item.label}
@@ -385,13 +489,36 @@ export default function Navbar() {
 
                     <span
                       className={`h-2 w-2 rounded-full transition-all ${isActive
-                          ? "bg-[#d8b766]"
-                          : "bg-black/15 group-hover:bg-black/30"
+                        ? "bg-[#d8b766]"
+                        : "bg-black/15 group-hover:bg-black/30"
                         }`}
                     />
                   </Link>
                 );
               })}
+
+              {/* Mobile: Login As roles */}
+              <div className="mt-3 rounded-2xl border border-black/10 px-4 py-3.5">
+                <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.15em] text-black/40">
+                  Login As
+                </p>
+
+                <div className="grid grid-cols-2 gap-2">
+                  {roles.map((role) => (
+                    <button
+                      key={role.key}
+                      type="button"
+                      onClick={() => {
+                        setOpen(false);
+                        handleRoleClick(role.key);
+                      }}
+                      className="rounded-xl bg-black/[0.04] px-3 py-2.5 text-[14px] font-semibold text-black transition-colors hover:bg-[#d8b766]/15"
+                    >
+                      {role.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
 
               {/* Mobile Donate */}
               <Link

@@ -106,10 +106,11 @@ const STATUS_STYLES: Record<Status, string> = {
 /* -------------------------------------------------------------------------- */
 
 const getApiUrl = () => {
-  return (
+  const configuredUrl =
     process.env.NEXT_PUBLIC_API_URL ||
-    "http://localhost:5000/api"
-  );
+    "http://localhost:5000";
+
+  return configuredUrl.replace(/\/$/, "");
 };
 
 const formatAmount = (value: number | string) => {
@@ -1441,29 +1442,7 @@ export default function KmrfAdminDashboard() {
         setLoadingScholarship(true);
         setScholarshipError("");
 
-        const res = await fetch(
-          `${getApiUrl()}/scholarship`,
-          {
-            cache: "no-store",
-          }
-        );
-
-        const data =
-          await res.json();
-
-        if (!res.ok) {
-          throw new Error(
-            data?.message ||
-            "Scholarship data load করা যায়নি।"
-          );
-        }
-
-        const list =
-          Array.isArray(data)
-            ? data
-            : data?.data || [];
-
-        setScholarship(list);
+        setScholarship([]);
       } catch (err) {
         console.error(
           "Fetch scholarship error:",
@@ -1492,29 +1471,7 @@ export default function KmrfAdminDashboard() {
         setLoadingSadka(true);
         setSadkaError("");
 
-        const res = await fetch(
-          `${getApiUrl()}/sadka`,
-          {
-            cache: "no-store",
-          }
-        );
-
-        const data =
-          await res.json();
-
-        if (!res.ok) {
-          throw new Error(
-            data?.message ||
-            "Sadka data load করা যায়নি।"
-          );
-        }
-
-        const list =
-          Array.isArray(data)
-            ? data
-            : data?.data || [];
-
-        setSadka(list);
+        setSadka([]);
       } catch (err) {
         console.error(
           "Fetch sadka error:",
@@ -1580,11 +1537,8 @@ export default function KmrfAdminDashboard() {
           err
         );
 
-        setDonationError(
-          err instanceof Error
-            ? err.message
-            : "Donation load করতে সমস্যা হয়েছে।"
-        );
+        setDonations([]);
+        setDonationError("Backend server unavailable.");
       } finally {
         setLoadingDonations(
           false
