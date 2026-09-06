@@ -134,6 +134,9 @@ export default function Navbar() {
   const accountRef = useRef<HTMLDivElement>(null);
 
   const pathname = usePathname();
+  if (pathname.startsWith("/khadem/dashboard")){
+    return null;
+  }
   const router = useRouter();
 
   /* Close menus on route change */

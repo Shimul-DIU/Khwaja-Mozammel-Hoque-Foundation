@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -13,6 +15,7 @@ import {
   faYoutube,
   faWhatsapp,
 } from "@fortawesome/free-brands-svg-icons";
+import { usePathname } from "next/navigation";
 
 const QUICK_LINKS = [
   { href: "/", labelEn: "Home", labelBn: "হোম" },
@@ -22,6 +25,10 @@ const QUICK_LINKS = [
 ];
 
 export default function Footer() {
+  const pathname=usePathname();
+  if(pathname.startsWith("/khadem/dashboard")){
+    return null;
+  }
   const year = new Date().getFullYear();
 
   return (
