@@ -134,7 +134,7 @@ export default function Navbar() {
   const accountRef = useRef<HTMLDivElement>(null);
 
   const pathname = usePathname();
-  if (pathname.startsWith("/khadem/dashboard")){
+  if (pathname.startsWith("/khadem/dashboard") || pathname.startsWith("/coordinator/dashboard") || pathname.startsWith("/admin")) {
     return null;
   }
   const router = useRouter();

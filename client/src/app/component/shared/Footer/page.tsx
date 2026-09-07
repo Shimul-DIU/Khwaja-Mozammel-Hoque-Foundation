@@ -26,7 +26,7 @@ const QUICK_LINKS = [
 
 export default function Footer() {
   const pathname=usePathname();
-  if(pathname.startsWith("/khadem/dashboard")){
+  if (pathname.startsWith("/khadem/dashboard") || pathname.startsWith("/coordinator/dashboard") || pathname.startsWith("/admin")){
     return null;
   }
   const year = new Date().getFullYear();
