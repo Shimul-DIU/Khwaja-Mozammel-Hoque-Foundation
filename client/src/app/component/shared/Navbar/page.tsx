@@ -199,7 +199,7 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full">
+    <header className="sticky top-0 z-50  max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
       {/* =====================================================
           MAIN NAVBAR

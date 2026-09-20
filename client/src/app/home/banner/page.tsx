@@ -4,10 +4,10 @@ import Link from "next/link";
 
 export default function Banner() {
   return (
-    <section className="w-full">
-      <div className="mx-auto max-w-7xl ">
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full">
         <div
-          className="relative h-[550px] sm:h-[650px] md:h-[600px] w-full bg-cover bg-left md:bg-left overflow-hidden shadow-sm "
+          className="relative h-[clamp(460px,52vw,600px)] w-full overflow-hidden bg-cover bg-[left_center] shadow-sm"
           style={{
             backgroundImage: "url('/banner-img.jpg')",
             backgroundRepeat: "no-repeat",
@@ -17,14 +17,14 @@ export default function Banner() {
           <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent"></div>
 
           {/* কন্টেন্ট – বাম দিকে সেন্টার্ড */}
-          <div className="absolute z-10 top-2/5 md:top-3/6 lg:top-2/6  -translate-y-1/4 sm:-translate-y-1/3 left-6 sm:left-12 flex items-center pr-6">
+          <div className="absolute inset-0 z-10 flex items-center px-6 sm:px-12">
             <div className="max-w-2xl text-white space-y-3 sm:space-y-5">
               {/* <span className="text-xs sm:text-sm font-semibold text-gold tracking-wide uppercase">
                 Welcome to Khwaja Mozammel Hoque (R) Foundation
               </span> */}
 
               <h1 className="text-2xl roboto-slab sm:text-4xl lg:text-5xl font-bold leading-tight">
-               Khwaja Mozammel Hoque (R) Foundation <br />
+                Khwaja Mozammel Hoque (R) Foundation <br />
                 <span className="text-xl roboto-slab sm:text-2xl lg:text-3xl font-bold">A Sufi Based Organization.</span>
               </h1>
 
