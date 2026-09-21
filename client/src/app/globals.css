@@ -1,6 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100..900&display=swap');
 @import "tailwindcss";
 
+:root {
+  --page-max-width: 1280px;
+  --page-padding: 16px;
+  --section-padding: 48px;
+  --surface-radius: 16px;
+}
+
 *,
 *::before,
 *::after {
@@ -18,6 +25,80 @@ body {
 
 body {
   overflow-x: hidden;
+  color: #15251f;
+  font-family: var(--font-geist-sans), sans-serif;
+  line-height: 1.5;
+}
+
+main > section > .mx-auto,
+main > section > div.mx-auto {
+  max-width: var(--page-max-width);
+}
+
+@media (min-width: 640px) {
+  :root {
+    --page-padding: 24px;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --page-padding: 32px;
+    --section-padding: 64px;
+  }
+}
+
+@media (min-width: 1440px) {
+  :root {
+    --page-padding: 32px;
+  }
+}
+
+/* Keep the existing Tailwind pages on a compact, consistent rhythm. */
+.py-24 {
+  padding-block: var(--section-padding);
+}
+
+.py-14 {
+  padding-block: 48px;
+}
+
+.gap-14 {
+  gap: 40px;
+}
+
+.gap-12 {
+  gap: 32px;
+}
+
+.p-7 {
+  padding: 24px;
+}
+
+.p-8 {
+  padding: 32px;
+}
+
+.sm\:p-9 {
+  padding: 32px;
+}
+
+.lg\:p-10 {
+  padding: 40px;
+}
+
+@media (max-width: 639px) {
+  .py-14 {
+    padding-block: 40px;
+  }
+
+  .py-24 {
+    padding-block: 48px;
+  }
+
+  .gap-14 {
+    gap: 32px;
+  }
 }
 
 .roboto-slab{

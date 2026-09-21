@@ -134,16 +134,21 @@ export default function Navbar() {
   const accountRef = useRef<HTMLDivElement>(null);
 
   const pathname = usePathname();
-  if (pathname.startsWith("/khadem/dashboard") || pathname.startsWith("/coordinator/dashboard") || pathname.startsWith("/admin")) {
-    return null;
-  }
   const router = useRouter();
+  const isDashboardPath =
+    pathname.startsWith("/khadem/dashboard") ||
+    pathname.startsWith("/coordinator/dashboard") ||
+    pathname.startsWith("/admin");
 
   /* Close menus on route change */
   useEffect(() => {
-    setOpen(false);
-    setSearchOpen(false);
-    setAccountOpen(false);
+    const resetMenus = window.setTimeout(() => {
+      setOpen(false);
+      setSearchOpen(false);
+      setAccountOpen(false);
+    }, 0);
+
+    return () => window.clearTimeout(resetMenus);
   }, [pathname]);
 
   /* Prevent body scroll on mobile menu */
@@ -183,6 +188,10 @@ export default function Navbar() {
     return () => document.removeEventListener("keydown", handleEsc);
   }, []);
 
+  if (isDashboardPath) {
+    return null;
+  }
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -199,19 +208,19 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50  max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <header className="w-full">
 
       {/* =====================================================
           MAIN NAVBAR
       ===================================================== */}
       <div className="border-b border-black/10 bg-white shadow-[0_6px_25px_rgba(0,0,0,0.08)]">
 
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-7xl items-center  justify-between px-4 sm:px-6 lg:px-8">
 
           {/* =================================================
               MAIN ROW
           ================================================= */}
-          <div className="flex h-[78px] items-center justify-between gap-4">
+          <div className="flex h-[72px] w-full items-center px-2 md:px-4 lg:px-6 justify-between gap-4">
 
             {/* =================================================
                 LOGO

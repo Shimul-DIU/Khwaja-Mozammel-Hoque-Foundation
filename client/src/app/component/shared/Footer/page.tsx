@@ -25,16 +25,16 @@ const QUICK_LINKS = [
 ];
 
 export default function Footer() {
-  const pathname=usePathname();
-  if (pathname.startsWith("/khadem/dashboard") || pathname.startsWith("/coordinator/dashboard") || pathname.startsWith("/admin")){
+  const pathname = usePathname();
+  if (pathname.startsWith("/khadem/dashboard") || pathname.startsWith("/coordinator/dashboard") || pathname.startsWith("/admin")) {
     return null;
   }
   const year = new Date().getFullYear();
 
   return (
-    <footer className=" max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-[#e4d6be] bg-[#3C3C3C] text-white">
+    <footer className="w-full border-t border-[#e4d6be] bg-[#3C3C3C] text-white">
 
-      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-10 px-6 py-12 sm:grid-cols-3 ">
+      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 py-10 sm:grid-cols-3 sm:px-6 lg:px-8">
 
         {/* Brand */}
         <div>
@@ -201,7 +201,7 @@ export default function Footer() {
 
 
       {/* Copyright */}
-      <div className="border-t border-white/10 px-6 py-4">
+      <div className="border-t border-white/10 px-4 py-4 sm:px-6 lg:px-8">
 
         <p className="mx-auto max-w-6xl text-center text-xs text-stone-500">
           © {year} খাজা মোজাম্মেল হক (রঃ) ফাউন্ডেশন — All rights reserved.
