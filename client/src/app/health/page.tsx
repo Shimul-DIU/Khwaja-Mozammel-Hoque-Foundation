@@ -81,7 +81,7 @@ export default function HealthPage() {
           HERO
       ========================================================= */}
       <section id="support" className="bg-white py-6">
-        <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
+        <div className="mx-auto site-container px-5 sm:px-8 lg:px-10">
           <div className="max-w-2xl">
             <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#a27e38]">
               Areas We Support
@@ -141,7 +141,7 @@ export default function HealthPage() {
       {/* =========================================================
           ABOUT
       ========================================================= */}
-      <section className="mx-auto max-w-7xl px-5 py-24 sm:px-8 lg:px-10">
+      <section className="mx-auto site-container px-5 py-24 sm:px-8 lg:px-10">
         <div className="grid gap-14 lg:grid-cols-[0.75fr_1.25fr] lg:items-start">
           {/* Left */}
           <div className="lg:sticky lg:top-28">
@@ -221,7 +221,7 @@ export default function HealthPage() {
           PROCESS
       ========================================================= */}
       <section className="bg-[#0d3b2e] py-24">
-        <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
+        <div className="mx-auto site-container px-5 sm:px-8 lg:px-10">
           <div className="mx-auto max-w-2xl text-center">
             <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#d8b766]">
               How It Works
@@ -280,7 +280,7 @@ export default function HealthPage() {
           PRINCIPLES
       ========================================================= */}
       <section className="bg-[#f0eee6] py-24">
-        <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
+        <div className="mx-auto site-container px-5 sm:px-8 lg:px-10">
           <div className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#a27e38]">
@@ -343,7 +343,7 @@ export default function HealthPage() {
       {/* =========================================================
           EMERGENCY STYLE SUPPORT CARD
       ========================================================= */}
-      <section className="mx-auto max-w-7xl px-5 py-24 sm:px-8 lg:px-10">
+      <section className="mx-auto site-container px-5 py-24 sm:px-8 lg:px-10">
         <div className="overflow-hidden rounded-[40px] bg-[#eadfbe]">
           <div className="grid lg:grid-cols-[1.1fr_0.9fr]">
             <div className="p-8 sm:p-12 lg:p-14">
@@ -458,7 +458,7 @@ export default function HealthPage() {
           FOOTER
       ========================================================= */}
       <footer className="border-t border-[#15251f]/10 bg-[#f8f7f2]">
-        <div className="mx-auto flex max-w-7xl flex-col gap-5 px-5 py-8 text-sm text-[#15251f]/45 sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-10">
+        <div className="mx-auto flex site-container flex-col gap-5 px-5 py-8 text-sm text-[#15251f]/45 sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-10">
           <div>
             <p className="font-bold text-[#15251f]">
               KMRF Health Support

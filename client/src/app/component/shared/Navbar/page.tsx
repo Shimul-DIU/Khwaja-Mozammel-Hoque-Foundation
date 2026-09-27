@@ -208,14 +208,14 @@ export default function Navbar() {
   };
 
   return (
-    <header className="w-full">
+    <header className="sticky top-0 z-50 site-container mx-auto">
 
       {/* =====================================================
           MAIN NAVBAR
       ===================================================== */}
       <div className="border-b border-black/10 bg-white shadow-[0_6px_25px_rgba(0,0,0,0.08)]">
 
-        <div className="mx-auto flex max-w-7xl items-center  justify-between px-4 sm:px-6 lg:px-8">
+        <div className="w-full px-4 sm:px-6 lg:px-8">
 
           {/* =================================================
               MAIN ROW

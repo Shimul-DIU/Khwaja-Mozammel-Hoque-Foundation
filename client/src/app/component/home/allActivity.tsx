@@ -59,7 +59,7 @@ const activities = [
 export default function AllActivities() {
   return (
     <section className="bg-white py-16 md:py-20">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto site-container px-4 sm:px-6 lg:px-8">
 
         {/* Section Header */}
         <div className="mx-auto mb-12 max-w-2xl text-center">

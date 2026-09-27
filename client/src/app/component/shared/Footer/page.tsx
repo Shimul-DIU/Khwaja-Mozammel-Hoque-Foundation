@@ -34,7 +34,7 @@ export default function Footer() {
   return (
     <footer className="w-full border-t border-[#e4d6be] bg-[#3C3C3C] text-white">
 
-      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 py-10 sm:grid-cols-3 sm:px-6 lg:px-8">
+      <div className="mx-auto grid site-container grid-cols-1 gap-8 px-4 py-10 sm:grid-cols-3 sm:px-6 lg:px-8">
 
         {/* Brand */}
         <div>

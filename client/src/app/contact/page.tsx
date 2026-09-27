@@ -96,7 +96,7 @@ export default function ContactPage() {
       ===================================================== */}
       <section
         id="contact-info"
-        className="mx-auto max-w-7xl px-5 py-14 sm:px-8 lg:px-10"
+        className="mx-auto site-container px-5 py-14 sm:px-8 lg:px-10"
       >
         <div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr]">
 
@@ -235,7 +235,7 @@ export default function ContactPage() {
         id="contact-form"
         className="bg-[#f0eee6] py-24"
       >
-        <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
+        <div className="mx-auto site-container px-5 sm:px-8 lg:px-10">
 
           <div className="grid gap-12 lg:grid-cols-[0.75fr_1.25fr]">
 
@@ -502,7 +502,7 @@ export default function ContactPage() {
       {/* =====================================================
           LOCATION
       ===================================================== */}
-      <section className="mx-auto max-w-7xl px-5 py-24 sm:px-8 lg:px-10">
+      <section className="mx-auto site-container px-5 py-24 sm:px-8 lg:px-10">
         <div className="overflow-hidden rounded-[40px] border border-[#15251f]/8 bg-white shadow-sm">
 
           <div className="grid lg:grid-cols-[0.85fr_1.15fr]">
@@ -644,7 +644,7 @@ export default function ContactPage() {
       ===================================================== */}
       <footer className="border-t border-[#15251f]/10 bg-[#f8f7f2]">
 
-        <div className="mx-auto flex max-w-7xl flex-col gap-5 px-5 py-8 text-sm text-[#15251f]/45 sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-10">
+        <div className="mx-auto flex site-container flex-col gap-5 px-5 py-8 text-sm text-[#15251f]/45 sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-10">
 
           <div>
             <p className="font-bold text-[#15251f]">

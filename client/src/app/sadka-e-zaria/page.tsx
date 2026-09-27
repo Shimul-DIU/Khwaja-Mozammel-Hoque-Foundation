@@ -108,7 +108,7 @@ export default function SadkaEZariaPage() {
       ========================================================= */}
       <section
         id="about"
-        className="mx-auto max-w-7xl px-5 py-12 sm:px-8 lg:px-10"
+        className="mx-auto site-container px-5 py-12 sm:px-8 lg:px-10"
       >
         <div className="grid gap-14 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
           {/* Left */}
@@ -185,7 +185,7 @@ export default function SadkaEZariaPage() {
         <div className="pointer-events-none absolute -left-32 top-0 h-72 w-72 rounded-full bg-[#d8b766]/5 blur-3xl" />
         <div className="pointer-events-none absolute -right-32 bottom-0 h-96 w-96 rounded-full bg-[#4c9b79]/10 blur-3xl" />
 
-        <div className="relative mx-auto max-w-7xl px-5 py-24 sm:px-8 lg:px-10">
+        <div className="relative mx-auto site-container px-5 py-24 sm:px-8 lg:px-10">
           {/* Heading */}
           <div className="mx-auto max-w-2xl text-center">
             <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#d8b766]">
@@ -270,7 +270,7 @@ export default function SadkaEZariaPage() {
       {/* =========================================================
           IMPACT PILLARS
       ========================================================= */}
-      <section className="mx-auto max-w-7xl px-5 py-24 sm:px-8 lg:px-10">
+      <section className="mx-auto site-container px-5 py-24 sm:px-8 lg:px-10">
         <div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr]">
           {/* Left */}
           <div>
@@ -413,7 +413,7 @@ export default function SadkaEZariaPage() {
         id="gallery"
         className="bg-[#f0eee6] py-24"
       >
-        <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
+        <div className="mx-auto site-container px-5 sm:px-8 lg:px-10">
           {/* Heading */}
           <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
             <div>
@@ -584,7 +584,7 @@ export default function SadkaEZariaPage() {
           FOOTER
       ========================================================= */}
       <footer className="border-t border-[#15251f]/10 bg-[#f8f7f2]">
-        <div className="mx-auto flex max-w-7xl flex-col gap-5 px-5 py-8 text-sm text-[#15251f]/40 sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-10">
+        <div className="mx-auto flex site-container flex-col gap-5 px-5 py-8 text-sm text-[#15251f]/40 sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-10">
           <div>
             <p className="font-bold text-[#15251f]">
               Sadka-E-Zaria
