@@ -134,21 +134,16 @@ export default function Navbar() {
   const accountRef = useRef<HTMLDivElement>(null);
 
   const pathname = usePathname();
+  if (pathname.startsWith("/khadem/dashboard") || pathname.startsWith("/coordinator/dashboard") || pathname.startsWith("/admin")) {
+    return null;
+  }
   const router = useRouter();
-  const isDashboardPath =
-    pathname.startsWith("/khadem/dashboard") ||
-    pathname.startsWith("/coordinator/dashboard") ||
-    pathname.startsWith("/admin");
 
   /* Close menus on route change */
   useEffect(() => {
-    const resetMenus = window.setTimeout(() => {
-      setOpen(false);
-      setSearchOpen(false);
-      setAccountOpen(false);
-    }, 0);
-
-    return () => window.clearTimeout(resetMenus);
+    setOpen(false);
+    setSearchOpen(false);
+    setAccountOpen(false);
   }, [pathname]);
 
   /* Prevent body scroll on mobile menu */
@@ -188,10 +183,6 @@ export default function Navbar() {
     return () => document.removeEventListener("keydown", handleEsc);
   }, []);
 
-  if (isDashboardPath) {
-    return null;
-  }
-
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -220,7 +211,7 @@ export default function Navbar() {
           {/* =================================================
               MAIN ROW
           ================================================= */}
-          <div className="flex h-[72px] w-full items-center px-2 md:px-4 lg:px-6 justify-between gap-4">
+          <div className="flex h-[78px] items-center justify-between gap-4">
 
             {/* =================================================
                 LOGO
