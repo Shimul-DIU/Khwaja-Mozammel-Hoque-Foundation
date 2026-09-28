@@ -1,5 +1,6 @@
 import pool from "../config/db.js";
 import bcrypt from "bcrypt";
+import { createHash, randomBytes } from "node:crypto";
 
 const parseArrayField = (value) => {
   if (!value) return null;
@@ -140,6 +141,87 @@ export const loginDevotee = async (req, res) => {
   } catch (error) {
     console.error("Login error:", error);
     return res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+export const requestPasswordReset = async (req, res) => {
+  try {
+    const email = typeof req.body?.email === "string" ? req.body.email.trim().toLowerCase() : "";
+    if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
+      return res.status(400).json({ success: false, message: "Enter a valid email address." });
+    }
+
+    // Always return the same response so callers cannot discover registered emails.
+    const user = await pool.query("SELECT kmrf_id FROM devotees WHERE email = $1", [email]);
+    if (user.rows.length && process.env.RESEND_API_KEY && process.env.MAIL_FROM) {
+      await pool.query("DELETE FROM password_reset_tokens WHERE kmrf_id = $1 OR expires_at <= NOW()", [user.rows[0].kmrf_id]);
+      const rawToken = randomBytes(32).toString("hex");
+      const tokenHash = createHash("sha256").update(rawToken).digest("hex");
+      await pool.query(
+        `INSERT INTO password_reset_tokens (kmrf_id, token_hash, expires_at)
+         VALUES ($1, $2, NOW() + INTERVAL '30 minutes')`,
+        [user.rows[0].kmrf_id, tokenHash]
+      );
+      const clientUrl = (process.env.CLIENT_URL || "").replace(/\/$/, "");
+      const resetUrl = `${clientUrl}/reset-password?token=${rawToken}`;
+      const mail = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          from: process.env.MAIL_FROM,
+          to: [email],
+          subject: "Reset your KMRF password",
+          text: `Use this link to reset your password. It expires in 30 minutes:\n\n${resetUrl}\n\nIf you did not request this, ignore this email.`,
+        }),
+      });
+      if (!mail.ok) console.error("Password reset email provider error:", await mail.text());
+    } else if (user.rows.length) {
+      console.error("Password reset email is not configured (RESEND_API_KEY and MAIL_FROM required).");
+    }
+
+    return res.status(200).json({ success: true, message: "If an account exists for that email, password reset instructions will be sent shortly." });
+  } catch (error) {
+    console.error("Password reset request error:", error);
+    return res.status(500).json({ success: false, message: "Could not process the request. Please try again." });
+  }
+};
+
+export const resetPassword = async (req, res) => {
+  try {
+    const { token, password } = req.body || {};
+    if (typeof token !== "string" || !/^[a-f0-9]{64}$/i.test(token)) {
+      return res.status(400).json({ success: false, message: "This reset link is invalid or expired." });
+    }
+    if (typeof password !== "string" || password.length < 6) {
+      return res.status(400).json({ success: false, message: "Password must be at least 6 characters." });
+    }
+    const tokenHash = createHash("sha256").update(token).digest("hex");
+    const hashedPassword = await bcrypt.hash(password, 12);
+    const db = await pool.connect();
+    try {
+      await db.query("BEGIN");
+      const tokenResult = await db.query(
+        "SELECT kmrf_id FROM password_reset_tokens WHERE token_hash = $1 AND expires_at > NOW() FOR UPDATE",
+        [tokenHash]
+      );
+      if (!tokenResult.rows.length) {
+        await db.query("ROLLBACK");
+        return res.status(400).json({ success: false, message: "This reset link is invalid or expired." });
+      }
+      const kmrfId = tokenResult.rows[0].kmrf_id;
+      await db.query("UPDATE devotees SET password = $1 WHERE kmrf_id = $2", [hashedPassword, kmrfId]);
+      await db.query("DELETE FROM password_reset_tokens WHERE kmrf_id = $1", [kmrfId]);
+      await db.query("COMMIT");
+    } catch (error) {
+      await db.query("ROLLBACK");
+      throw error;
+    } finally {
+      db.release();
+    }
+    return res.status(200).json({ success: true, message: "Password updated. You can now sign in." });
+  } catch (error) {
+    console.error("Password reset error:", error);
+    return res.status(500).json({ success: false, message: "Could not reset password. Please try again." });
   }
 };
 

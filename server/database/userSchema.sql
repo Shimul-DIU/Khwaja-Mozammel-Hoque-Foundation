@@ -84,6 +84,15 @@ CREATE TABLE IF NOT EXISTS devotees (
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS password_reset_tokens (
+    id BIGSERIAL PRIMARY KEY,
+    kmrf_id VARCHAR(30) NOT NULL REFERENCES devotees(kmrf_id) ON DELETE CASCADE,
+    token_hash CHAR(64) NOT NULL UNIQUE,
+    expires_at TIMESTAMPTZ NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS password_reset_tokens_expiry_idx ON password_reset_tokens(expires_at);
+
 
 -- =======dotaton table==========
 CREATE TABLE IF NOT EXISTS donations (
