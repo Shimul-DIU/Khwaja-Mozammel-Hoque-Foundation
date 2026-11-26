@@ -34,7 +34,7 @@ export default function Banner() {
 
               <div className="pt-2 flex flex-wrap gap-3">
                 <Link
-                  href="/donate"
+                  href="/about"
                   className="bg-[#008E48] hover:bg-[#006648] text-white font-bold px-6 py-2.5 rounded-lg transition-all text-sm shadow-md hover:scale-105 active:scale-95"
                 >
                   More About

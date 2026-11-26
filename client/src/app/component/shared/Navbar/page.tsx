@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
+import { useLanguage } from "../../../../context/LanguageContext";
 
 type NavItem = {
   href: string;
@@ -126,6 +127,7 @@ function ChevronDownIcon({
 ========================================================= */
 
 export default function Navbar() {
+  const { language, setLanguage } = useLanguage();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
@@ -199,12 +201,12 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 site-container mx-auto">
+    <header className="sticky top-0 z-50 w-full bg-white shadow-[0_6px_25px_rgba(0,0,0,0.08)]">
 
       {/* =====================================================
           MAIN NAVBAR
       ===================================================== */}
-      <div className="border-b border-black/10 bg-white shadow-[0_6px_25px_rgba(0,0,0,0.08)]">
+      <div className="site-container mx-auto border-b border-black/10">
 
         <div className="w-full px-4 sm:px-6 lg:px-8">
 
@@ -307,6 +309,39 @@ export default function Navbar() {
                 RIGHT ACTIONS
             ================================================= */}
             <div className="flex items-center gap-2">
+
+              <div
+                role="group"
+                aria-label="language selection"
+                className="inline-flex items-center gap-1 rounded-xl border border-black/10 bg-[#f7f7f5] p-1"
+              >
+                <button
+                  type="button"
+                  aria-label="বাংলা"
+                  aria-pressed={language === "bn"}
+                  onClick={() => setLanguage("bn")}
+                  className={`min-w-9 rounded-lg px-2 py-1.5 text-xs font-bold transition ${
+                    language === "bn"
+                      ? "bg-[#0d3b2e] text-white shadow-sm"
+                      : "text-black/60 hover:bg-black/[0.05]"
+                  }`}
+                >
+                  বাং
+                </button>
+                <button
+                  type="button"
+                  aria-label="English"
+                  aria-pressed={language === "en"}
+                  onClick={() => setLanguage("en")}
+                  className={`min-w-9 rounded-lg px-2 py-1.5 text-xs font-bold transition ${
+                    language === "en"
+                      ? "bg-[#0d3b2e] text-white shadow-sm"
+                      : "text-black/60 hover:bg-black/[0.05]"
+                  }`}
+                >
+                  En
+                </button>
+              </div>
 
               {/* Mobile Search */}
               <button

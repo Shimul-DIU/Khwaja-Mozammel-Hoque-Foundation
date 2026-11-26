@@ -16,6 +16,7 @@ import {
   faWhatsapp,
 } from "@fortawesome/free-brands-svg-icons";
 import { usePathname } from "next/navigation";
+import { useLanguage } from "../../../../context/LanguageContext";
 
 const QUICK_LINKS = [
   { href: "/", labelEn: "Home", labelBn: "হোম" },
@@ -25,6 +26,7 @@ const QUICK_LINKS = [
 ];
 
 export default function Footer() {
+  const { language } = useLanguage();
   const pathname = usePathname();
   if (pathname.startsWith("/khadem/dashboard") || pathname.startsWith("/coordinator/dashboard") || pathname.startsWith("/admin")) {
     return null;
@@ -32,7 +34,15 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="w-full border-t border-[#e4d6be] bg-[#3C3C3C] text-white">
+    <footer
+      className="w-full border-t border-white/10 bg-[#063b2c] text-white"
+      style={{
+        backgroundImage:
+          "linear-gradient(rgba(4, 45, 34, 0.88), rgba(4, 38, 29, 0.97)), url('/footer-pattern.svg')",
+        backgroundPosition: "center",
+        backgroundSize: "cover",
+      }}
+    >
 
       <div className="mx-auto grid site-container grid-cols-1 gap-8 px-4 py-10 sm:grid-cols-3 sm:px-6 lg:px-8">
 
@@ -75,10 +85,7 @@ export default function Footer() {
                   href={link.href}
                   className="text-sm transition hover:text-blue-400"
                 >
-                  {link.labelEn}{" "}
-                  <span className="opacity-70">
-                    ({link.labelBn})
-                  </span>
+                  {language === "bn" ? link.labelBn : link.labelEn}
                 </Link>
 
               </li>
@@ -203,8 +210,11 @@ export default function Footer() {
       {/* Copyright */}
       <div className="border-t border-white/10 px-4 py-4 sm:px-6 lg:px-8">
 
-        <p className="mx-auto max-w-6xl text-center text-xs text-stone-500">
-          © {year} খাজা মোজাম্মেল হক (রঃ) ফাউন্ডেশন — All rights reserved.
+        <p className="mx-auto max-w-6xl text-center text-xs text-white/60">
+          © {year}{" "}
+          {language === "bn"
+            ? "খাজা মোজাম্মেল হক (রঃ) ফাউন্ডেশন — সর্বস্বত্ব সংরক্ষিত।"
+            : "Khwaja Mozammel Hoque (R) Foundation — All rights reserved."}
         </p>
 
       </div>
